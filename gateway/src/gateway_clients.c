@@ -10,22 +10,26 @@ unsigned int g_gateway_clients_registred, g_gateway_clients_active;
 
 static void mclient_A_handler(void)
 {
-
+    recv_data_t recv_mtrx_data;
+    gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENTS_MCLIENT_A].socket_fd, &recv_mtrx_data, sizeof(recv_mtrx_data));
 }
 
 static void mclient_C_handler(void)
 {
-    
+    recv_data_t recv_mtrx_data;
+    gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENTS_MCLIENT_C].socket_fd, &recv_mtrx_data, sizeof(recv_mtrx_data));   
 }
 
 static void vclient_b_handler(void)
 {
-    
+    recv_data_t recv_vector_data;
+    gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENTS_VCLIENT_b].socket_fd, &recv_vector_data, sizeof(recv_vector_data));
 }
 
 static void vclient_d_handler(void)
 {
-    
+    recv_data_t recv_vector_data;
+    gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENTS_VCLIENT_d].socket_fd, &recv_vector_data, sizeof(recv_vector_data));
 }
 
 static void (*get_client_handler_by_client_type(gateway_clients_types_t client_type))(void)

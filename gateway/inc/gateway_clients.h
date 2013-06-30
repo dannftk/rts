@@ -22,6 +22,25 @@ typedef struct gateway_clients_s {
     void (*run_handler)(void);
 } gateway_clients_t;
 
+typedef struct mtrx_fmt_s {
+    int row;
+    int col;
+    int value;
+} mtrx_fmt_t;
+
+typedef struct vector_fmt_s {
+    int pos;
+    int value;
+} vector_fmt_t;
+
+typedef struct recv_data_s {
+    char header[4];
+    union {
+        vector_fmt_t vector;
+        mtrx_fmt_t mtrx;
+    } data;
+} recv_data_t;
+
 
 #define GATEWAY_CLIENTS_TYPES_NEXT(client_type) (client_type + 1)
 

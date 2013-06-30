@@ -14,7 +14,7 @@
 #include "vclient_main.h"
 #include "vclient_socket.h"
 
-static vector_ftm_t g_vector_fmt[VECTOR_SIZE];
+static vector_fmt_t g_vector_fmt[VECTOR_SIZE];
 static int g_vector_size = VECTOR_SIZE;
 
 #if 0

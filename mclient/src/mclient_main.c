@@ -14,7 +14,7 @@
 #include "mclient_main.h"
 #include "mclient_socket.h"
 
-static mtrx_ftm_t g_mtrx_fmt[ROWS * COLUMNS];
+static mtrx_fmt_t g_mtrx_fmt[ROWS * COLUMNS];
 static int g_mtrx_size = ROWS * COLUMNS;
 
 #if 0

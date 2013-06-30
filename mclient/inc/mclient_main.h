@@ -12,15 +12,15 @@ typedef enum mclients_types_e {
     MCLIENT_C = 0x1
 } mclients_types_t;
 
-typedef struct mtrx_ftm_s {
+typedef struct mtrx_fmt_s {
     int row;
     int col;
     int value;
-} mtrx_ftm_t;
+} mtrx_fmt_t;
 
 typedef struct send_data_s {
     char header[4];
-    mtrx_ftm_t data;
+    mtrx_fmt_t data;
 } send_data_t;
 
 #endif /* MCLIENT_MAIN_H */

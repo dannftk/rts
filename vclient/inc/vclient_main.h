@@ -11,14 +11,14 @@ typedef enum vclients_types_e {
     VCLIENT_d = 0x1
 } vclients_types_t;
 
-typedef struct vector_ftm_s {
+typedef struct vector_fmt_s {
     int pos;
     int value;
-} vector_ftm_t;
+} vector_fmt_t;
 
 typedef struct send_data_s {
     char header[4];
-    vector_ftm_t data;
+    vector_fmt_t data;
 } send_data_t;
 
 #endif /* VCLIENT_MAIN_H */
