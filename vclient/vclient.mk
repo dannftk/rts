@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-VCLIENT_BIN := $(BIN_DIR)/VCLIENT
+VCLIENT_BIN := $(BIN_DIR)/vclient
 
 VCLIENT_INC_DIR := $(VCLIENT_DIR)/inc
 VCLIENT_SRC_DIR := $(VCLIENT_DIR)/src

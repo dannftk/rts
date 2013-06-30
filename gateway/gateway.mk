@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-GATEWAY_BIN := $(BIN_DIR)/GATEWAY
+GATEWAY_BIN := $(BIN_DIR)/gateway
 
 GATEWAY_INC_DIR := $(GATEWAY_DIR)/inc
 GATEWAY_SRC_DIR := $(GATEWAY_DIR)/src

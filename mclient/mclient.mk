@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-MCLIENT_BIN := $(BIN_DIR)/MCLIENT
+MCLIENT_BIN := $(BIN_DIR)/mclient
 
 MCLIENT_INC_DIR := $(MCLIENT_DIR)/inc
 MCLIENT_SRC_DIR := $(MCLIENT_DIR)/src
