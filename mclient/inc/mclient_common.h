@@ -3,6 +3,9 @@
 #ifndef MCLIENT_COMMON_H
 #define MCLIENT_COMMON_H
 
+#include <assert.h>
+#include <stdlib.h>
+
 typedef enum mclient_error_code_e {
     MCLIENT_SUCCESS = 0,
     MCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR,
@@ -15,23 +18,23 @@ typedef enum mclient_error_code_e {
 
 #define MCLIENT_COMMON_ASSERT(condition) assert(condition)
 
-#define MCLIENT_COMMON_MEM_ALLOC(pointer, bytes_count)            \
+#define MCLIENT_COMMON_MEM_ALLOC(pointer, bytes_count)          \
     do {                                                        \
         if (NULL == pointer)                                    \
         {                                                       \
             pointer = malloc(bytes_count);                      \
             if (NULL == pointer)                                \
             {                                                   \
-                MCLIENT_COMMON_ASSERT(0);                         \
+                MCLIENT_COMMON_ASSERT(0);                       \
             }                                                   \
         }                                                       \
         else                                                    \
         {                                                       \
-            MCLIENT_COMMON_ASSERT(0);                             \
+            MCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
     } while(0)
 
-#define MCLIENT_COMMON_DEALLOC_MEM(pointer)                       \
+#define MCLIENT_COMMON_DEALLOC_MEM(pointer)                     \
     do {                                                        \
         if (pointer)                                            \
         {                                                       \
@@ -40,7 +43,7 @@ typedef enum mclient_error_code_e {
         }                                                       \
         else                                                    \
         {                                                       \
-            MCLIENT_COMMON_ASSERT(0);                             \
+            MCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
     } while(0)
 

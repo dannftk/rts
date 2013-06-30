@@ -7,7 +7,6 @@
 #include <sys/un.h>
 
 #include <string.h>
-#include <stdio.h>
 
 #include "mclient_socket.h"
 
@@ -33,4 +32,9 @@ int mclient_socket_connect_socket(int socket_fd_remote)
 void mclient_socket_close_socket(int socket_fd)
 {
     close(socket_fd);
+}
+
+ssize_t mclient_socket_send(int socket_fd_remote, void *buffer, size_t send_bytes)
+{
+	return send(socket_fd_remote, buffer, send_bytes, 0);
 }

@@ -1,9 +1,10 @@
 /* encoding: UTF-8 */
 
-#include <assert.h>
+#include <sys/types.h>
+
 #include <stdio.h>
 #include <stddef.h>
-#include <stdlib.h>
+
 #include <string.h>
 
 #include "mclient_common.h"
@@ -57,6 +58,21 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
     return err_code;
 }
 
+static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_types_t mclient_type)
+{
+    mclient_error_code_t err_code = MCLIENT_SUCCESS;
+
+    if (-1 == mclient_socket_send(socket_fd_remote, &mclient_type, sizeof(mclient_type)))
+    {
+        err_code = MCLIENT_SEND_IPC_SOCKET_ERROR;
+        goto error;
+    }
+
+    error:
+
+    return err_code;
+}
+
 int main(int const argc, char const *argv[])
 {
     char *mtrx_fp = NULL;
@@ -64,7 +80,7 @@ int main(int const argc, char const *argv[])
 
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
 
-    if (2 != argc)
+    if (3 != argc)
     {
         err_code = MCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR;
         goto error;
@@ -78,10 +94,10 @@ int main(int const argc, char const *argv[])
     MCLIENT_COMMON_DEALLOC_MEM(mtrx_fp);
     if (MCLIENT_SUCCESS == err_code)
     {
-        unsigned int socket_fd_remote;
+        int socket_fd_remote;
 
         socket_fd_remote = mclient_socket_create_socket();
-        if (-1 == socket_fd_remote) 
+        if (-1 == socket_fd_remote)
         {
             err_code = MCLIENT_CREATE_IPC_SOCKET_ERROR;
             goto error;
@@ -92,6 +108,8 @@ int main(int const argc, char const *argv[])
             err_code = MCLIENT_CONNECT_IPC_SOCKET_ERROR;
             goto error;
         }
+
+        err_code = begin_process(socket_fd_remote, (mclients_types_t)atoi(argv[2]));
 
         mclient_socket_close_socket(socket_fd_remote);
     }
