@@ -4,34 +4,34 @@
 #define MCLIENT_COMMON_H
 
 typedef enum mclient_error_code_e {
-    MCLIENT_MAIN_SUCCESS = 0,
-    MCLIENT_MAIN_WRONG_NUMBER_CLI_PARAMS_ERROR,
-    MCLIENT_MAIN_CANT_OPEN_MATRIX_FILE_ERROR,
-    MCLIENT_MAIN_CREATE_MTRX_SOCK_ERROR,
-    MCLIENT_MAIN_CONNECT_MTRX_SOCK_ERROR,
-    MCLIENT_MAIN_SEND_MTRX_SOCK_ERROR
+    MCLIENT_SUCCESS = 0,
+    MCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR,
+    MCLIENT_CANT_OPEN_MATRIX_FILE_ERROR,
+    MCLIENT_CREATE_IPC_SOCKET_ERROR,
+    MCLIENT_CONNECT_IPC_SOCKET_ERROR,
+    MCLIENT_SEND_IPC_SOCKET_ERROR
 } mclient_error_code_t;
 
 
-#define MCLIENT_MAIN_ASSERT(condition) assert(condition)
+#define MCLIENT_COMMON_ASSERT(condition) assert(condition)
 
-#define MCLIENT_MAIN_MEM_ALLOC(pointer, bytes_count)            \
+#define MCLIENT_COMMON_MEM_ALLOC(pointer, bytes_count)            \
     do {                                                        \
         if (NULL == pointer)                                    \
         {                                                       \
             pointer = malloc(bytes_count);                      \
             if (NULL == pointer)                                \
             {                                                   \
-                MCLIENT_MAIN_ASSERT(0);                         \
+                MCLIENT_COMMON_ASSERT(0);                         \
             }                                                   \
         }                                                       \
         else                                                    \
         {                                                       \
-            MCLIENT_MAIN_ASSERT(0);                             \
+            MCLIENT_COMMON_ASSERT(0);                             \
         }                                                       \
     } while(0)
 
-#define MCLIENT_MAIN_DEALLOC_MEM(pointer)                       \
+#define MCLIENT_COMMON_DEALLOC_MEM(pointer)                       \
     do {                                                        \
         if (pointer)                                            \
         {                                                       \
@@ -40,7 +40,7 @@ typedef enum mclient_error_code_e {
         }                                                       \
         else                                                    \
         {                                                       \
-            MCLIENT_MAIN_ASSERT(0);                             \
+            MCLIENT_COMMON_ASSERT(0);                             \
         }                                                       \
     } while(0)
 
