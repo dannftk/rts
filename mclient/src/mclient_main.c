@@ -50,13 +50,13 @@ typedef enum mclient_main_error_code_e {
 
 static int g_mtrx[ROWS][COLUMNS];
 
-static void print_mtrx(int rows, int cols)
+static void print_mtrx(void)
 {
     int i;
-    for (i = 0; i < rows; i++)
+    for (i = 0; i < ROWS; i++)
     {
         int j;
-        for (j = 0; j < cols; j++)
+        for (j = 0; j < COLUMNS; j++)
         {
             printf("%d ", g_mtrx[i][j]);
         }
@@ -64,15 +64,10 @@ static void print_mtrx(int rows, int cols)
     }
 }
 
-static enum mclient_main_error_code_e read_mtrx_from_file(char *mtrx_fp,
-                                                          int *rows,
-                                                          int *columns)
+static enum mclient_main_error_code_e read_mtrx_from_file(char *mtrx_fp)
 {
     mclient_main_error_code_t err_code = MCLIENT_MAIN_SUCCESS;
     FILE *p_mtrx_f;
-
-    *rows = 0;
-    *columns = 0;
 
     p_mtrx_f = fopen(mtrx_fp, "r");
     if (NULL == p_mtrx_f)
@@ -92,10 +87,6 @@ static enum mclient_main_error_code_e read_mtrx_from_file(char *mtrx_fp,
                 col = 0;
             }
         }
-
-        *rows = row;
-        *columns = 0 == row ? col : COLUMNS;
-
         fclose(p_mtrx_f);
     }
 
@@ -105,7 +96,6 @@ static enum mclient_main_error_code_e read_mtrx_from_file(char *mtrx_fp,
 int main(int const argc, char const *argv[])
 {
     char *mtrx_fp = NULL;
-    int mtrx_rows, mtrx_cols;
     size_t mtrx_fp_len;
 
     mclient_main_error_code_t err_code = MCLIENT_MAIN_SUCCESS;
@@ -120,11 +110,11 @@ int main(int const argc, char const *argv[])
     MCLIENT_MAIN_MEM_ALLOC(mtrx_fp, (mtrx_fp_len + 1) * sizeof(char));
     strcpy(mtrx_fp, argv[1]);
 
-    err_code = read_mtrx_from_file(mtrx_fp, &mtrx_rows, &mtrx_cols);
+    err_code = read_mtrx_from_file(mtrx_fp);
     MCLIENT_MAIN_DEALLOC_MEM(mtrx_fp);
     if (MCLIENT_MAIN_SUCCESS == err_code)
     {
-        print_mtrx(mtrx_rows, mtrx_cols);
+        print_mtrx();
     }
 
     error:
