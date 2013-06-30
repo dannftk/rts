@@ -1,10 +1,51 @@
 /* encoding: UTF-8 */
 
+#include <stdio.h>
+
 #include "gateway_clients.h"
 #include "gateway_socket.h"
 
 gateway_clients_t g_gateway_clients[GATEWAY_CLIENTS_COUNT];
 unsigned int g_gateway_clients_registred, g_gateway_clients_active;
+
+static void mclient_A_handler(void)
+{
+
+}
+
+static void mclient_C_handler(void)
+{
+    
+}
+
+static void vclient_b_handler(void)
+{
+    
+}
+
+static void vclient_d_handler(void)
+{
+    
+}
+
+static void (*get_client_handler_by_client_type(gateway_clients_types_t client_type))(void)
+{
+    switch (client_type)
+    {
+        case GATEWAY_CLIENTS_MCLIENT_A:
+            return mclient_A_handler;
+        case GATEWAY_CLIENTS_MCLIENT_C:
+            return mclient_C_handler;
+        case GATEWAY_CLIENTS_VCLIENT_b:
+            return vclient_b_handler;
+        case GATEWAY_CLIENTS_VCLIENT_d:
+            return vclient_d_handler;
+        default:
+            GATEWAY_COMMON_ASSERT(0);
+            break;
+    }
+    return NULL;
+}
 
 enum gateway_clients_types_e gateway_clients_request_client_type(int socket_fd_remote)
 {
@@ -24,7 +65,8 @@ void gateway_clients_register_client(int socket_fd_remote,
         .socket_fd = socket_fd_remote,
         .client_type = client_type,
         .register_number = register_number,
-        .registered_flag = 1
+        .registered_flag = 1,
+        .run_handler = get_client_handler_by_client_type(client_type)
     };
     ++g_gateway_clients_registred;
 }
