@@ -1,15 +1,48 @@
 /* encoding: UTF-8 */
 
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "gateway_main.h"
 #include "gateway_common.h"
 #include "gateway_socket.h"
 #include "gateway_clients.h"
 
+extern gateway_clients_t g_gateway_clients[GATEWAY_CLIENTS_COUNT];
+extern unsigned int g_gateway_clients_active;
+
 static enum gateway_error_code_e begin_process(void)
 {
     gateway_error_code_t err_code = GATEWAY_SUCCESS;
+    fd_set read_client_sockets_fds;
+    int result;
+    int socket_client_fd_max;
+
+    FD_ZERO(&read_client_sockets_fds);
+    socket_client_fd_max = gateway_clients_set_registered_clients_onto_fdset(&read_client_sockets_fds);
+
+    while (g_gateway_clients_active)
+    {
+        result = select(socket_client_fd_max + 1, &read_client_sockets_fds, NULL, NULL, 0);
+        if (result < 0)
+        {
+            GATEWAY_COMMON_ASSERT(0);
+        }
+        else
+        {
+            gateway_clients_types_t client_num;
+            for (client_num = GATEWAY_CLIENTS_MCLIENT_A;
+                 client_num < GATEWAY_CLIENTS_COUNT;
+                 client_num = GATEWAY_CLIENTS_TYPES_NEXT(client_num))
+            {
+                if (FD_ISSET(g_gateway_clients[client_num].socket_fd, &read_client_sockets_fds))
+                {
+                    g_gateway_clients[client_num].run_handler();
+                }
+            }
+        }
+    }
 
     return err_code;
 }

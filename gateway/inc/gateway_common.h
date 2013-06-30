@@ -3,6 +3,10 @@
 #ifndef GATEWAY_COMMON_H
 #define GATEWAY_COMMON_H
 
+#include <assert.h>
+
+#define GATEWAY_COMMON_ASSERT(condition) assert(condition)
+
 typedef enum gateway_error_code_e {
     GATEWAY_SUCCESS = 0,
     GATEWAY_CREATE_IPC_SOCKET_ERROR,
