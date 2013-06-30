@@ -6,50 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "mclient_common.h"
 #include "mclient_main.h"
-
-#define ROWS 3
-#define COLUMNS 3
-
-#define MCLIENT_MAIN_ASSERT(condition) assert(condition)
-
-#define MCLIENT_MAIN_MEM_ALLOC(pointer, bytes_count)    \
-    do {                                                \
-        if (NULL == pointer)                            \
-        {                                               \
-            pointer = malloc(bytes_count);              \
-            if (NULL == pointer)                        \
-            {                                           \
-                MCLIENT_MAIN_ASSERT(0);                 \
-            }                                           \
-        }                                               \
-        else                                            \
-        {                                               \
-            MCLIENT_MAIN_ASSERT(0);                     \
-        }                                               \
-    } while(0)
-
-#define MCLIENT_MAIN_DEALLOC_MEM(pointer)               \
-    do {                                                \
-        if (pointer)                                    \
-        {                                               \
-            free(pointer);                              \
-            pointer = NULL;                             \
-        }                                               \
-        else                                            \
-        {                                               \
-            MCLIENT_MAIN_ASSERT(0);                     \
-        }                                               \
-    } while(0)
-
-typedef enum mclient_main_error_code_e {
-    MCLIENT_MAIN_SUCCESS = 0,
-    MCLIENT_MAIN_WRONG_NUMBER_CLI_PARAMS_ERROR,
-    MCLIENT_MAIN_CANT_OPEN_MATRIX_FILE_ERROR
-} mclient_main_error_code_t;
+#include "mclient_socket.h"
 
 static int g_mtrx[ROWS][COLUMNS];
 
+#if 0
 static void print_mtrx(void)
 {
     int i;
@@ -63,10 +26,11 @@ static void print_mtrx(void)
         printf("\n");
     }
 }
+#endif
 
-static enum mclient_main_error_code_e read_mtrx_from_file(char *mtrx_fp)
+static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
 {
-    mclient_main_error_code_t err_code = MCLIENT_MAIN_SUCCESS;
+    mclient_error_code_t err_code = MCLIENT_MAIN_SUCCESS;
     FILE *p_mtrx_f;
 
     p_mtrx_f = fopen(mtrx_fp, "r");
@@ -98,7 +62,7 @@ int main(int const argc, char const *argv[])
     char *mtrx_fp = NULL;
     size_t mtrx_fp_len;
 
-    mclient_main_error_code_t err_code = MCLIENT_MAIN_SUCCESS;
+    mclient_error_code_t err_code = MCLIENT_MAIN_SUCCESS;
 
     if (2 != argc)
     {
@@ -114,7 +78,22 @@ int main(int const argc, char const *argv[])
     MCLIENT_MAIN_DEALLOC_MEM(mtrx_fp);
     if (MCLIENT_MAIN_SUCCESS == err_code)
     {
-        print_mtrx();
+        unsigned int socket_fd_remote;
+
+        socket_fd_remote = mclient_socket_create_socket();
+        if (-1 == socket_fd_remote) 
+        {
+            err_code = MCLIENT_MAIN_CREATE_MTRX_SOCK_ERROR;
+            goto error;
+        }
+        
+        if (-1 == mclient_socket_connect_socket(socket_fd_remote))
+        {
+            err_code = MCLIENT_MAIN_CONNECT_MTRX_SOCK_ERROR;
+            goto error;
+        }
+
+        mclient_socket_close_socket(socket_fd_remote);
     }
 
     error:
