@@ -79,7 +79,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
 {
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
     send_data_t send_data = (send_data_t){ 
-        .header = "num"
+        .header = "sta"
     };
 
     if (-1 == mclient_socket_send(socket_fd_remote, &mclient_type, sizeof(mclient_type)))
@@ -87,6 +87,8 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         err_code = MCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
+
+    strcpy(send_data.header, "num");
 
     init_random();
 

@@ -7,6 +7,13 @@
 #include "gateway_socket.h"
 #include "gateway_clients.h"
 
+static enum gateway_error_code_e begin_process(void)
+{
+    gateway_error_code_t err_code = GATEWAY_SUCCESS;
+
+    return err_code;
+}
+
 int main(int const argc, char const *argv[])
 {
     int socket_fd_local;
@@ -53,6 +60,8 @@ int main(int const argc, char const *argv[])
         
         gateway_clients_register_client(socket_fd_remote, client_type, client_num);
     }
+
+    err_code = begin_process();
 
     error_client:
 

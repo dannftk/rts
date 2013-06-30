@@ -69,7 +69,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
 {
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
     send_data_t send_data = (send_data_t){ 
-        .header = "num"
+        .header = "sta"
     };
 
     if (-1 == vclient_socket_send(socket_fd_remote, &vclient_type, sizeof(vclient_type)))
@@ -80,6 +80,8 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
 
     init_random();
 
+    strcpy(send_data.header, "num");
+    
     while (g_vector_size > 0)
     {
         int vector_ind = get_vector_index(g_vector_size);
