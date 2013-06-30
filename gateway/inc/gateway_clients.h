@@ -18,6 +18,6 @@ enum gateway_clients_types_e gateway_clients_request_client_type(int socket_fd_r
 void gateway_clients_register_client(int socket_fd_remote,
                                      gateway_clients_types_t client_type,
                                      unsigned int register_number);
-void gateway_clients_remove_all_clients(void);
+void gateway_clients_remove_registered_clients(void);
 
 #endif /* GATEWAY_CLIENTS_H */

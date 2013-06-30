@@ -34,27 +34,29 @@ int main(int const argc, char const *argv[])
         if (-1 == gateway_socket_listen_socket(socket_fd_local))
         {
             err_code = GATEWAY_LISTEN_IPC_SOCKET_ERROR;
-            goto error;
+            goto error_client;
         }
 
         socket_fd_remote = gateway_socket_accept_socket(socket_fd_local);
         if (-1 == socket_fd_remote)
         {
             err_code = GATEWAY_ACCEPT_IPC_SOCKET_ERROR;
-            goto error;
+            goto error_client;
         }
 
         client_type = gateway_clients_request_client_type(socket_fd_remote);
         if (-1 == client_type)
         {
             err_code = GATEWAY_RECV_IPC_SOCKET_ERROR;
-            goto error;
+            goto error_client;
         }
         
         gateway_clients_register_client(socket_fd_remote, client_type, client_num);
     }
 
-    gateway_clients_remove_all_clients();
+    error_client:
+
+    gateway_clients_remove_registered_clients();
 
     error:
 

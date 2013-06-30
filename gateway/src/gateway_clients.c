@@ -37,7 +37,7 @@ void gateway_clients_register_client(int socket_fd_remote,
     ++gateway_clients_count;
 }
 
-void gateway_clients_remove_all_clients(void)
+void gateway_clients_remove_registered_clients(void)
 {
     unsigned int client_num;
     for (client_num = 0; client_num < GATEWAY_CLIENTS_COUNT; client_num++)
