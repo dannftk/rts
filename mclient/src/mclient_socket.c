@@ -13,17 +13,17 @@
 
 int mclient_socket_create_socket(void)
 {
-	return socket(AF_UNIX, SOCK_STREAM, 0);
+    return socket(AF_UNIX, SOCK_STREAM, 0);
 }
 
 int mclient_socket_connect_socket(int socket_fd_remote)
 {
-	struct sockaddr_un socket_addr_remote;
-	socklen_t socket_addr_len;
+    struct sockaddr_un socket_addr_remote;
+    socklen_t socket_addr_len;
 
-	memset(&socket_addr_remote, 0, sizeof(socket_addr_remote));
+    memset(&socket_addr_remote, 0, sizeof(socket_addr_remote));
 
-	socket_addr_remote.sun_family = AF_UNIX;
+    socket_addr_remote.sun_family = AF_UNIX;
     strcpy(socket_addr_remote.sun_path, IPC_SOCKET_NAME);
     socket_addr_len = strlen(socket_addr_remote.sun_path) + 1 + sizeof(socket_addr_remote.sun_family);
 
@@ -32,5 +32,5 @@ int mclient_socket_connect_socket(int socket_fd_remote)
 
 void mclient_socket_close_socket(int socket_fd)
 {
-	close(socket_fd);
+    close(socket_fd);
 }
