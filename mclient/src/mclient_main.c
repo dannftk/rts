@@ -7,22 +7,26 @@
 
 #include <string.h>
 
+#include <time.h>
+#include <math.h>
+
 #include "mclient_common.h"
 #include "mclient_main.h"
 #include "mclient_socket.h"
 
-static int g_mtrx[ROWS][COLUMNS];
+static mtrx_ftm_t g_mtrx_fmt[ROWS * COLUMNS];
+static int g_mtrx_size = ROWS * COLUMNS;
 
 #if 0
 static void print_mtrx(void)
 {
-    int i;
-    for (i = 0; i < ROWS; i++)
+    int row;
+    for (row = 0; row < ROWS; row++)
     {
-        int j;
-        for (j = 0; j < COLUMNS; j++)
+        int col;
+        for (col = 0; col < COLUMNS; col++)
         {
-            printf("%d ", g_mtrx[i][j]);
+            printf("%d ", g_mtrx_fmt[row * col + col]);
         }
         printf("\n");
     }
@@ -44,7 +48,10 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
         int row = 0, col = 0;
         while (!(feof(p_mtrx_f) || row == ROWS))
         {
-            fscanf(p_mtrx_f, "%d", &g_mtrx[row][col]);
+            g_mtrx_fmt[row * col + col].row = row;
+            g_mtrx_fmt[row * col + col].col = col;
+            fscanf(p_mtrx_f, "%d", &g_mtrx_fmt[row * col + col].value);
+
             ++col;
             if (col == COLUMNS)
             {
@@ -58,15 +65,44 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
     return err_code;
 }
 
+static void init_random(void)
+{
+    srand(time(0));
+}
+
+static int get_mtrx_index(int mtrx_size)
+{
+    return (int)(rand() * mtrx_size);
+}
+
 static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_types_t mclient_type)
 {
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
+    send_data_t send_data = (send_data_t){ 
+        .header = "num"
+    };
 
     if (-1 == mclient_socket_send(socket_fd_remote, &mclient_type, sizeof(mclient_type)))
     {
         err_code = MCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
+
+    init_random();
+
+    while (g_mtrx_size > 0)
+    {
+        int mtrx_ind = get_mtrx_index(g_mtrx_size);
+        send_data.data = g_mtrx_fmt[mtrx_ind];
+
+        mclient_socket_send(socket_fd_remote, &send_data, sizeof(send_data));
+
+        g_mtrx_fmt[mtrx_ind] = g_mtrx_fmt[g_mtrx_size - 1];
+        --g_mtrx_size;
+    }
+
+    strcpy(send_data.header, "end");
+    mclient_socket_send(socket_fd_remote, send_data.header, sizeof(send_data.header));
 
     error:
 
