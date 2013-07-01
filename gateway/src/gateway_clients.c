@@ -10,6 +10,7 @@
 
 gateway_clients_t g_gateway_clients[GATEWAY_CLIENTS_COUNT];
 unsigned int g_gateway_clients_registered, g_gateway_clients_active;
+int g_socket_client_fd_max;
 
 static void mclient_A_handler(void)
 {
@@ -179,7 +180,11 @@ void gateway_clients_remove_registered_client(gateway_clients_types_t client_typ
     if (g_gateway_clients[client_type].registered_flag)
     {
         gateway_socket_close_socket(g_gateway_clients[client_type].socket_fd);
-        g_gateway_clients[client_type].registered_flag = 0;
+        g_gateway_clients[client_type] = (gateway_clients_t) {
+            .socket_fd = 0,
+            .registered_flag = 0,
+            .run_handler = NULL
+        };
         --g_gateway_clients_registered;
     }
 }
@@ -195,25 +200,71 @@ void gateway_clients_remove_registered_clients(void)
     }
 }
 
-int gateway_clients_set_registered_clients_onto_fdset(fd_set *readfds)
+void gateway_clients_set_registered_client_onto_fdset(gateway_clients_types_t client_type, fd_set *readfds)
 {
-    int socket_client_fd_max = -1;
-    gateway_clients_types_t client_num;
-
-    for (client_num = GATEWAY_CLIENTS_MCLIENT_A;
-         client_num < GATEWAY_CLIENTS_COUNT;
-         client_num = GATEWAY_CLIENTS_TYPES_NEXT(client_num))
+    if (g_gateway_clients[client_type].registered_flag)
     {
-        if (g_gateway_clients[client_num].registered_flag)
-        {
-            FD_SET(g_gateway_clients[client_num].socket_fd, readfds);
-            if (g_gateway_clients[client_num].socket_fd > socket_client_fd_max)
-            {
-                socket_client_fd_max = g_gateway_clients[client_num].socket_fd;
-            }
-            ++g_gateway_clients_active;
-        }
-    }
+        FD_SET(g_gateway_clients[client_type].socket_fd, readfds);
+        g_gateway_clients[client_type].active_flag = 1;
 
-    return socket_client_fd_max;
+        if (g_gateway_clients[client_type].socket_fd > g_socket_client_fd_max)
+        {
+            g_socket_client_fd_max = g_gateway_clients[client_type].socket_fd;
+        }
+        ++g_gateway_clients_active;
+    }
+}
+
+void gateway_clients_set_registered_clients_onto_fdset(fd_set *readfds)
+{
+    gateway_clients_types_t client_type;
+
+    g_socket_client_fd_max = -1;
+    for (client_type = GATEWAY_CLIENTS_MCLIENT_A;
+         client_type < GATEWAY_CLIENTS_COUNT;
+         client_type = GATEWAY_CLIENTS_TYPES_NEXT(client_type))
+    {
+        gateway_clients_set_registered_client_onto_fdset(client_type, readfds);
+    }
+}
+
+void gateway_clients_remove_registered_client_from_fdset(gateway_clients_types_t client_type, fd_set *readfds)
+{
+    if (g_gateway_clients[client_type].registered_flag)
+    {
+        FD_CLR(g_gateway_clients[client_type].socket_fd, readfds);
+        g_gateway_clients[client_type].active_flag = 0;
+        --g_gateway_clients_active;
+
+        if (g_gateway_clients[client_type].socket_fd == g_socket_client_fd_max)
+        {
+            gateway_clients_types_t client_type_2;
+
+            g_socket_client_fd_max = -1;
+            for (client_type_2 = GATEWAY_CLIENTS_MCLIENT_A;
+                 client_type_2 < GATEWAY_CLIENTS_COUNT;
+                 client_type_2 = GATEWAY_CLIENTS_TYPES_NEXT(client_type_2))
+            {
+                if (g_gateway_clients[client_type_2].active_flag && 
+                    g_gateway_clients[client_type_2].socket_fd > g_socket_client_fd_max)
+                {
+                    g_socket_client_fd_max = g_gateway_clients[client_type_2].socket_fd;
+                }
+            }
+
+        }
+
+    }
+}
+
+void gateway_clients_remove_registered_clients_from_fdset(fd_set *readfds)
+{
+    gateway_clients_types_t client_type;
+
+    for (client_type = GATEWAY_CLIENTS_MCLIENT_A;
+         client_type < GATEWAY_CLIENTS_COUNT;
+         client_type = GATEWAY_CLIENTS_TYPES_NEXT(client_type))
+    {
+        gateway_clients_remove_registered_client_from_fdset(client_type, readfds);
+    }
 }

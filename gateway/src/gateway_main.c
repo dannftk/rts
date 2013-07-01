@@ -11,25 +11,25 @@
 
 extern gateway_clients_t g_gateway_clients[GATEWAY_CLIENTS_COUNT];
 extern unsigned int g_gateway_clients_active;
+extern int g_socket_client_fd_max;
 
 static enum gateway_error_code_e begin_process(void)
 {
     gateway_error_code_t err_code = GATEWAY_SUCCESS;
     fd_set read_client_sockets_fds;
     int result;
-    int socket_client_fd_max;
 
     FD_ZERO(&read_client_sockets_fds);
     
-    socket_client_fd_max = gateway_clients_set_registered_clients_onto_fdset(&read_client_sockets_fds);
-    if (-1 == socket_client_fd_max)
+    gateway_clients_set_registered_clients_onto_fdset(&read_client_sockets_fds);
+    if (-1 == g_socket_client_fd_max)
     {
         GATEWAY_COMMON_ASSERT(0);
     }
 
     while (g_gateway_clients_active)
     {
-        result = select(socket_client_fd_max + 1, &read_client_sockets_fds, NULL, NULL, 0);
+        result = select(g_socket_client_fd_max + 1, &read_client_sockets_fds, NULL, NULL, 0);
         if (result < 0)
         {
             GATEWAY_COMMON_ASSERT(0);

@@ -19,6 +19,7 @@ typedef struct gateway_clients_s {
     gateway_clients_types_t client_type;
     unsigned int register_number;
     int registered_flag;
+    int active_flag;
     void (*run_handler)(void);
 } gateway_clients_t;
 
@@ -51,10 +52,18 @@ typedef struct recv_mtrx_data_s {
 #define GATEWAY_CLIENTS_TYPES_NEXT(client_type) (client_type + 1)
 
 enum gateway_clients_types_e gateway_clients_request_client_type(int socket_fd_remote);
+
 void gateway_clients_register_client(int socket_fd_remote,
                                      gateway_clients_types_t client_type,
                                      unsigned int register_number);
+
+void gateway_clients_remove_registered_client(gateway_clients_types_t client_type);
 void gateway_clients_remove_registered_clients(void);
-int gateway_clients_set_registered_clients_onto_fdset(fd_set *readfds);
+
+void gateway_clients_set_registered_client_onto_fdset(gateway_clients_types_t client_type, fd_set *readfds);
+void gateway_clients_set_registered_clients_onto_fdset(fd_set *readfds);
+
+void gateway_clients_remove_registered_client_from_fdset(gateway_clients_types_t client_type, fd_set *readfds);
+void gateway_clients_remove_registered_clients_from_fdset(fd_set *readfds);
 
 #endif /* GATEWAY_CLIENTS_H */
