@@ -48,8 +48,8 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
         int row = 0, col = 0;
         while (!(feof(p_mtrx_f) || row == ROWS))
         {
-            g_mtrx_fmt[row * col + col].row = row;
-            g_mtrx_fmt[row * col + col].col = col;
+            g_mtrx_fmt[row * col + col].pos.row = row;
+            g_mtrx_fmt[row * col + col].pos.col = col;
             fscanf(p_mtrx_f, "%d", &g_mtrx_fmt[row * col + col].value);
 
             ++col;
@@ -88,7 +88,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         goto error;
     }
 
-    strcpy(send_data.header, "num");
+    strcpy(send_data.header, "mtr");
 
     init_random();
 

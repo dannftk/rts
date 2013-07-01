@@ -80,7 +80,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
 
     init_random();
 
-    strcpy(send_data.header, "num");
+    strcpy(send_data.header, "vec");
     
     while (g_vector_size > 0)
     {

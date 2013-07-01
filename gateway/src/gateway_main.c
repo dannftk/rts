@@ -53,6 +53,7 @@ int main(int const argc, char const *argv[])
     gateway_error_code_t err_code = GATEWAY_SUCCESS;
     unsigned int client_num;
 
+    /* Create server-gateway socket */
     socket_fd_local = gateway_socket_create_socket();
     if (-1 == socket_fd_local)
     {
@@ -60,12 +61,14 @@ int main(int const argc, char const *argv[])
         goto error;
     }
 
+    /* Bind server-gateway socket */
     if (-1 == gateway_socket_bind_socket(socket_fd_local))
     {
         err_code = GATEWAY_BIND_IPC_SOCKET_ERROR;
         goto error;
     }
 
+    /* Listen this server-gateway socket for establishment of new connections */
     for (client_num = 0; client_num < GATEWAY_CLIENTS_COUNT; client_num++)
     {
         int socket_fd_remote;
@@ -77,6 +80,7 @@ int main(int const argc, char const *argv[])
             goto error_client;
         }
 
+        /* For each connection with new client we get new connection-oriented socket */
         socket_fd_remote = gateway_socket_accept_socket(socket_fd_local);
         if (-1 == socket_fd_remote)
         {
@@ -84,6 +88,7 @@ int main(int const argc, char const *argv[])
             goto error_client;
         }
 
+        /* Request client type from the new client */
         client_type = gateway_clients_request_client_type(socket_fd_remote);
         if (-1 == client_type)
         {
@@ -91,17 +96,21 @@ int main(int const argc, char const *argv[])
             goto error_client;
         }
         
+        /* Register new client in the RTS GateWay */
         gateway_clients_register_client(socket_fd_remote, client_type, client_num);
     }
 
+    /* Begin processing data */
     err_code = begin_process();
 
     error_client:
 
+    /* Remove all registered earlier clients and close their sockets */
     gateway_clients_remove_registered_clients();
 
     error:
 
+    /* Close server-gateway socket */
     gateway_socket_close_socket(socket_fd_local);
 
     return err_code;

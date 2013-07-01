@@ -11,7 +11,7 @@ typedef enum gateway_clients_types_e {
     GATEWAY_CLIENTS_MCLIENT_C = 0x1,
     GATEWAY_CLIENTS_VCLIENT_b = 0x2,
     GATEWAY_CLIENTS_VCLIENT_d = 0x3,
-    GATEWAY_CLIENTS_COUNT
+    GATEWAY_CLIENTS_COUNT = 0x4
 } gateway_clients_types_t;
 
 typedef struct gateway_clients_s {
@@ -22,9 +22,13 @@ typedef struct gateway_clients_s {
     void (*run_handler)(void);
 } gateway_clients_t;
 
-typedef struct mtrx_fmt_s {
+typedef struct mtrx_val_pos_s {
     int row;
     int col;
+} mtrx_val_pos_t;
+
+typedef struct mtrx_fmt_s {
+    mtrx_val_pos_t pos;
     int value;
 } mtrx_fmt_t;
 
@@ -33,13 +37,15 @@ typedef struct vector_fmt_s {
     int value;
 } vector_fmt_t;
 
-typedef struct recv_data_s {
+typedef struct recv_vector_data_s {
     char header[4];
-    union {
-        vector_fmt_t vector;
-        mtrx_fmt_t mtrx;
-    } data;
-} recv_data_t;
+    vector_fmt_t vector;
+} recv_vector_data_t;
+
+typedef struct recv_mtrx_data_s {
+    char header[4];
+    mtrx_fmt_t mtrx;
+} recv_mtrx_data_t;
 
 
 #define GATEWAY_CLIENTS_TYPES_NEXT(client_type) (client_type + 1)
