@@ -13,26 +13,32 @@ void gateway_scheduler_add_task_to_queue(task_data_t task_data)
 {
     g_task_queue[g_tail_queue_ind].task_data = task_data;
     g_task_queue[g_tail_queue_ind].priority = 0;
+
     ++g_tail_queue_ind;
     g_tail_queue_ind %= TASK_QUEUE_SIZE;
+
+    if (g_head_queue_ind == g_tail_queue_ind)
+    {
+        GATEWAY_COMMON_ASSERT(0);
+    }
 }
 
-task_data_t const* gateway_scheduler_get_ptask_from_queue(void)
+int gateway_scheduler_get_ptask_from_queue(task_data_t *p_task_data)
 {
-    task_data_t *p_task_data;
+    int result = 1;
 
     if (g_head_queue_ind != g_tail_queue_ind)
     {
-        p_task_data = &g_task_queue[g_head_queue_ind].task_data;
+        *p_task_data = g_task_queue[g_head_queue_ind].task_data;
         ++g_head_queue_ind;
         g_head_queue_ind %= TASK_QUEUE_SIZE;
     }
     else
     {
-        p_task_data = NULL;
+        result = 0;
     }
 
-    return p_task_data;
+    return result;
 }
 
 void gateway_scheduler_process_task(task_data_t task_data)
