@@ -20,7 +20,12 @@ static enum gateway_error_code_e begin_process(void)
     int socket_client_fd_max;
 
     FD_ZERO(&read_client_sockets_fds);
+    
     socket_client_fd_max = gateway_clients_set_registered_clients_onto_fdset(&read_client_sockets_fds);
+    if (-1 == socket_client_fd_max)
+    {
+        GATEWAY_COMMON_ASSERT(0);
+    }
 
     while (g_gateway_clients_active)
     {
