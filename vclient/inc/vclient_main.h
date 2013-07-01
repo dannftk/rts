@@ -3,6 +3,9 @@
 #ifndef VCLIENT_MAIN_H
 #define VCLIENT_MAIN_H
 
+#define MIN_SLEEP_TIME_MLS 100
+#define MAX_SLEEP_TIME_MLS 300
+
 #define VECTOR_SIZE 3
 
 /* do not change numbers of types of clients */
@@ -18,7 +21,10 @@ typedef struct vector_fmt_s {
 
 typedef struct send_data_s {
     char header[4];
-    vector_fmt_t data;
+    union {
+    	vclients_types_t vclient_type;
+    	vector_fmt_t vector;
+    } data;
 } send_data_t;
 
 #endif /* VCLIENT_MAIN_H */

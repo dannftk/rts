@@ -2,6 +2,8 @@
 
 #include <sys/types.h>
 
+#include <unistd.h>
+
 #include <stdio.h>
 #include <stddef.h>
 
@@ -55,6 +57,11 @@ static enum vclient_error_code_e read_vector_from_file(char *vector_fp)
     return err_code;
 }
 
+static int get_random_time(void)
+{
+    return MIN_SLEEP_TIME_MLS + rand() * (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
+}
+
 static void init_random(void)
 {
     srand(time(0));
@@ -68,11 +75,14 @@ static int get_vector_index(int vector_size)
 static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_types_t vclient_type)
 {
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
-    send_data_t send_data = (send_data_t){ 
-        .header = "sta"
+    send_data_t send_data = (send_data_t) { 
+        .header = "sta",
+        .data.vclient_type = vclient_type
     };
 
-    if (-1 == vclient_socket_send(socket_fd_remote, &vclient_type, sizeof(vclient_type)))
+    if (-1 == vclient_socket_send(socket_fd_remote,
+                                  &send_data,
+                                  sizeof(send_data.header) + sizeof(send_data.data.vclient_type)))
     {
         err_code = VCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
@@ -84,10 +94,13 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
     
     while (g_vector_size > 0)
     {
+        sleep(get_random_time());
         int vector_ind = get_vector_index(g_vector_size);
-        send_data.data = g_vector_fmt[vector_ind];
+        send_data.data.vector = g_vector_fmt[vector_ind];
 
-        vclient_socket_send(socket_fd_remote, &send_data, sizeof(send_data));
+        vclient_socket_send(socket_fd_remote,
+                            &send_data,
+                            sizeof(send_data.header) + sizeof(send_data.data.vector));
 
         g_vector_fmt[vector_ind] = g_vector_fmt[g_vector_size - 1];
         --g_vector_size;

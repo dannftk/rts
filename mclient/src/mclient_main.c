@@ -2,6 +2,8 @@
 
 #include <sys/types.h>
 
+#include <unistd.h>
+
 #include <stdio.h>
 #include <stddef.h>
 
@@ -65,6 +67,11 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
     return err_code;
 }
 
+static int get_random_time(void)
+{
+    return MIN_SLEEP_TIME_MLS + rand() * (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
+}
+
 static void init_random(void)
 {
     srand(time(0));
@@ -79,10 +86,13 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
 {
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
     send_data_t send_data = (send_data_t){ 
-        .header = "sta"
+        .header = "sta",
+        .data.mclient_type = mclient_type
     };
 
-    if (-1 == mclient_socket_send(socket_fd_remote, &mclient_type, sizeof(mclient_type)))
+    if (-1 == mclient_socket_send(socket_fd_remote,
+                                  &send_data,
+                                  sizeof(send_data.header) + sizeof(send_data.data.mclient_type)))
     {
         err_code = MCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
@@ -94,10 +104,13 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
 
     while (g_mtrx_size > 0)
     {
+        sleep(get_random_time());
         int mtrx_ind = get_mtrx_index(g_mtrx_size);
-        send_data.data = g_mtrx_fmt[mtrx_ind];
+        send_data.data.mtrx = g_mtrx_fmt[mtrx_ind];
 
-        mclient_socket_send(socket_fd_remote, &send_data, sizeof(send_data));
+        mclient_socket_send(socket_fd_remote,
+                            &send_data,
+                            sizeof(send_data.header) + sizeof(send_data.data.mtrx));
 
         g_mtrx_fmt[mtrx_ind] = g_mtrx_fmt[g_mtrx_size - 1];
         --g_mtrx_size;

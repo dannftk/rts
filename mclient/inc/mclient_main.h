@@ -3,6 +3,9 @@
 #ifndef MCLIENT_MAIN_H
 #define MCLIENT_MAIN_H
 
+#define MIN_SLEEP_TIME_MLS 200
+#define MAX_SLEEP_TIME_MLS 400
+
 #define ROWS 3
 #define COLUMNS 3
 
@@ -24,7 +27,10 @@ typedef struct mtrx_fmt_s {
 
 typedef struct send_data_s {
     char header[4];
-    mtrx_fmt_t data;
+    union {
+    	mclients_types_t mclient_type;
+    	mtrx_fmt_t mtrx;
+    } data;
 } send_data_t;
 
 #endif /* MCLIENT_MAIN_H */
