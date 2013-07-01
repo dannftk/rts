@@ -46,30 +46,43 @@ void gateway_scheduler_process_task(task_data_t task_data)
     switch(task_data.task_type)
     {
         case PUT_MTRX_A_VALUE:
+            gateway_tasks_put_mtrx_A_value(task_data.data.mtrx);
             break;
         case PUT_MTRX_C_VALUE:
+            gateway_tasks_put_mtrx_C_value(task_data.data.mtrx);
             break;
         case PUT_VECTOR_b_VALUE:
+            gateway_tasks_put_vector_b_value(task_data.data.vector);
             break;
         case PUT_VECTOR_d_VALUE:
+            gateway_tasks_put_vector_d_value(task_data.data.vector);
             break;
         case MUL_MTRX_A_VEC_b_VALUE:
+            gateway_tasks_mul_mtrx_A_val_on_vector_b_val(task_data.data.mtrx_val_pos);
             break;
         case MUL_MTRX_C_VEC_d_VALUE:
+            gateway_tasks_mul_mtrx_C_val_on_vector_d_val(task_data.data.mtrx_val_pos);
             break;
         case ADD_RES_Ab_RES_Cd_VALUE:
+            gateway_tasks_add_Ab_res_val_Cd_res_val(task_data.data.value_position);
             break;
         case SEND_VELUE_TO_DESTSTATION:
+            gateway_tasks_send_value_to_destination_station(task_data.data.value_position);
             break;
         case END_DESTSTATION:
+            gateway_tasks_send_end_signal_to_destination_station();
             break;
         case END_MTRX_A:
+            gateway_tasks_handle_end_mtrx_A_signal();
             break;
         case END_MTRX_C:
+            gateway_tasks_handle_end_mtrx_C_signal();
             break;
         case END_VECTOR_b:
+            gateway_tasks_handle_end_vector_b_signal();
             break;
         case END_VECTOR_d:
+            gateway_tasks_handle_end_vector_d_signal();
             break;
         default:
             GATEWAY_COMMON_ASSERT(0);
