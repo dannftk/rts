@@ -1,16 +1,9 @@
 /* encoding: UTF-8 */
 
-#include <sys/types.h>
-
 #include <unistd.h>
-
 #include <stdio.h>
-#include <stddef.h>
-
 #include <string.h>
-
 #include <time.h>
-#include <math.h>
 
 #include "deststation_common.h"
 #include "deststation_main.h"
@@ -35,7 +28,7 @@ static int get_random_time(void)
     return MIN_SLEEP_TIME_MLS + rand() * (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
 }
 
-static int get_random_vector_index()
+static int get_random_vector_index(void)
 {
     int index_of_vector_index = (int)(rand() * g_vector_res_ind_size);
     int vector_index = g_vector_res_ind[index_of_vector_index];
@@ -51,13 +44,12 @@ static void init_random(void)
 static enum deststation_error_code_e begin_process(int socket_fd_remote)
 {
     deststation_error_code_t err_code = DESTSTATION_SUCCESS;
-
     send_data_t send_data = (send_data_t) { 
         .header = "req"
     };
     recv_data_t recv_data;
+    
     int ind;
-
     for (ind = 0; ind < g_vector_res_ind_size; ind++)
     {
         g_vector_res_ind[ind] = ind;
@@ -67,6 +59,7 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
 
     while (g_vector_res_ind_size > 0)
     {
+        int sleep_time;
         int vector_ind = get_random_vector_index();
         send_data.vector_val_pos = vector_ind;
 
@@ -77,7 +70,10 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
             goto error;
         }
 
-        sleep(get_random_time());
+        sleep_time = get_random_time();
+        printf("Sleeping %d\n ms", sleep_time);
+
+        sleep(sleep_time);
 
         /* Get result of request */
         if (-1 == deststation_socket_receive(socket_fd_remote, &recv_data, sizeof(recv_data)))
