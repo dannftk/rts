@@ -1,0 +1,22 @@
+/* encoding: UTF-8 */
+
+#ifndef DESTSTATION_COMMON_H
+#define DESTSTATION_COMMON_H
+
+#include <assert.h>
+#include <stdlib.h>
+
+typedef enum deststation_error_code_e {
+    DESTSTATION_SUCCESS = 0,
+    DESTSTATION_WRONG_NUMBER_CLI_PARAMS_ERROR,
+    DESTSTATION_CREATE_IPC_SOCKET_ERROR,
+    DESTSTATION_CONNECT_IPC_SOCKET_ERROR,
+    DESTSTATION_SEND_IPC_SOCKET_ERROR,
+    DESTSTATION_RECV_IPC_SOCKET_ERROR,
+    DESTSTATION_RECV_WRONG_DATA_FORMAT
+} deststation_error_code_t;
+
+
+#define DESTSTATION_COMMON_ASSERT(condition) assert(condition)
+
+#endif /* DESTSTATION_COMMON_H */

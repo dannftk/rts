@@ -22,8 +22,8 @@ typedef struct vector_fmt_s {
 typedef struct send_data_s {
     char header[4];
     union {
-    	vclients_types_t vclient_type;
-    	vector_fmt_t vector;
+        vclients_types_t vclient_type;
+        vector_fmt_t vector;
     } data;
 } send_data_t;
 

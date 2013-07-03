@@ -28,8 +28,8 @@ typedef struct mtrx_fmt_s {
 typedef struct send_data_s {
     char header[4];
     union {
-    	mclients_types_t mclient_type;
-    	mtrx_fmt_t mtrx;
+        mclients_types_t mclient_type;
+        mtrx_fmt_t mtrx;
     } data;
 } send_data_t;
 
