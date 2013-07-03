@@ -8,14 +8,21 @@
 
 #define VECTOR_SIZE 3
 
-typedef struct send_data_s {
+#define CLIENT_TYPE_DESTSTATION 0x4
+
+typedef struct send_client_type_data_to_gateway_s {
+    char header[4];
+    int client_type;
+} send_client_type_data_to_gateway_t;
+
+typedef struct send_vector_val_pos_data_to_gateway_s {
     char header[4];
     int vector_val_pos;
-} send_data_t;
+} send_vector_val_pos_data_to_gateway_t;
 
-typedef struct recv_data_s {
+typedef struct recv_vector_val_data_from_gateway_s {
 	char header[4];
 	int vector_val;
-} recv_data_t;
+} recv_vector_val_data_from_gateway_t;
 
 #endif /* DESTSTATION_MAIN_H */

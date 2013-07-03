@@ -16,8 +16,9 @@
 #include "mclient_main.h"
 #include "mclient_socket.h"
 
-static mtrx_fmt_t g_mtrx_fmt[ROWS * COLUMNS];
-static int g_mtrx_size = ROWS * COLUMNS;
+static int g_mtrx[ROWS][COLUMNS];
+static int g_mtrx_col_index[COLUMNS];
+static int g_mtrx_col_ind_size = COLUMNS;
 
 #if 0
 static void print_mtrx(void)
@@ -28,7 +29,7 @@ static void print_mtrx(void)
         int col;
         for (col = 0; col < COLUMNS; col++)
         {
-            printf("%d ", g_mtrx_fmt[row * col + col]);
+            printf("%d ", g_mtrx[row][col]]);
         }
         printf("\n");
     }
@@ -50,9 +51,7 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
         int row = 0, col = 0;
         while (!(feof(p_mtrx_f) || row == ROWS))
         {
-            g_mtrx_fmt[row * col + col].pos.row = row;
-            g_mtrx_fmt[row * col + col].pos.col = col;
-            fscanf(p_mtrx_f, "%d", &g_mtrx_fmt[row * col + col].value);
+            fscanf(p_mtrx_f, "%d", &g_mtrx[row][col]);
 
             ++col;
             if (col == COLUMNS)
@@ -77,47 +76,89 @@ static void init_random(void)
     srand(time(0));
 }
 
-static int get_mtrx_index(int mtrx_size)
+static int get_col_mtrx_index(void)
 {
-    return (int)(rand() * mtrx_size);
+    int index_of_mtrx_col_index = (int)(rand() * g_mtrx_col_ind_size);
+    int mtrx_col_index = g_mtrx_col_index[index_of_mtrx_col_index];
+    g_mtrx_col_index[index_of_mtrx_col_index] = g_mtrx_col_index[g_mtrx_col_ind_size - 1];
+    return mtrx_col_index;
 }
 
 static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_types_t mclient_type)
 {
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
-    send_data_t send_data = (send_data_t){ 
-        .header = "sta",
-        .data.mclient_type = mclient_type
+    send_client_type_data_t send_client_type_data = (send_client_type_data_t) { 
+        .header = "typ",
+        .mclient_type = mclient_type
     };
+    recv_mtrx_row_data_request_t recv_mtrx_row_request;
 
+    /* Send type of client */
     if (-1 == mclient_socket_send(socket_fd_remote,
-                                  &send_data,
-                                  sizeof(send_data.header) + sizeof(send_data.data.mclient_type)))
+                                  &send_client_type_data,
+                                  sizeof(send_client_type_data)))
     {
         err_code = MCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
 
-    strcpy(send_data.header, "mtr");
-
     init_random();
 
-    while (g_mtrx_size > 0)
+    /* endless loop for recieving commands from GateWay until 'end' will be occured */
+    while (1)
     {
-        sleep(get_random_time());
-        int mtrx_ind = get_mtrx_index(g_mtrx_size);
-        send_data.data.mtrx = g_mtrx_fmt[mtrx_ind];
+        /* Recieve command from GateWay */
+        if (-1 == mclient_socket_receive(socket_fd_remote,
+                                         &recv_mtrx_row_request,
+                                         sizeof(recv_mtrx_row_request)))
+        {
+            err_code = MCLIENT_RECV_IPC_SOCKET_ERROR;
+            goto error;
+        }
 
-        mclient_socket_send(socket_fd_remote,
-                            &send_data,
-                            sizeof(send_data.header) + sizeof(send_data.data.mtrx));
+        /* If command if "end" then finish processing */
+        if (!strcmp(recv_mtrx_row_request.header, "end") &&
+            -1 == recv_mtrx_row_request.row)
+        {
+            break;
+        }
+        else
+        {
+            /* If command is not "mtr" then generate error */
+            if (strcmp(recv_mtrx_row_request.header, "mtr"))
+            {
+                err_code = MCLIENT_RECV_WRONG_DATA_FORMAT_ERROR;
+                goto error;
+            }
+        }
 
-        g_mtrx_fmt[mtrx_ind] = g_mtrx_fmt[g_mtrx_size - 1];
-        --g_mtrx_size;
+        while (g_mtrx_col_ind_size > 0)
+        {
+            int col_mtrx_ind;
+            send_mtrx_data_t send_mtrx_data = (send_mtrx_data_t) {
+                .header = "mtr"
+            };
+
+            sleep(get_random_time());
+
+            col_mtrx_ind = get_col_mtrx_index();
+
+            send_mtrx_data.mtrx = (mtrx_fmt_t) {
+                .pos.row = recv_mtrx_row_request.row,
+                .pos.col = col_mtrx_ind,
+                .value = g_mtrx[recv_mtrx_row_request.row][col_mtrx_ind]
+            };
+
+            /* Send matrix value */
+            mclient_socket_send(socket_fd_remote,
+                                &send_mtrx_data,
+                                sizeof(send_mtrx_data_t));
+
+            --g_mtrx_col_ind_size;
+        }
+
+        g_mtrx_col_ind_size = COLUMNS;
     }
-
-    strcpy(send_data.header, "end");
-    mclient_socket_send(socket_fd_remote, send_data.header, sizeof(send_data.header));
 
     error:
 

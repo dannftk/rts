@@ -25,12 +25,19 @@ typedef struct mtrx_fmt_s {
     int value;
 } mtrx_fmt_t;
 
-typedef struct send_data_s {
+typedef struct send_mtrx_data_s {
     char header[4];
-    union {
-        mclients_types_t mclient_type;
-        mtrx_fmt_t mtrx;
-    } data;
-} send_data_t;
+    mtrx_fmt_t mtrx;
+} send_mtrx_data_t;
+
+typedef struct send_client_type_data_s {
+    char header[4];
+    mclients_types_t mclient_type;
+} send_client_type_data_t;
+
+typedef struct recv_mtrx_row_data_request_s {
+    char header[4];
+    int row;
+} recv_mtrx_row_data_request_t;
 
 #endif /* MCLIENT_MAIN_H */

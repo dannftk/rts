@@ -11,5 +11,6 @@ int mclient_socket_create_socket(void);
 int mclient_socket_connect_socket(int socket_fd_remote);
 void mclient_socket_close_socket(int socket_fd);
 ssize_t mclient_socket_send(int socket_fd_remote, void *buffer, size_t send_bytes);
+ssize_t mclient_socket_receive(int socket_fd_remote, void *buffer, size_t max_recv_bytes);
 
 #endif /* MCLIENT_CLIENT_H */

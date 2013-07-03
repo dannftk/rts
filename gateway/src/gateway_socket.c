@@ -50,6 +50,11 @@ void gateway_socket_close_socket(int socket_fd)
     close(socket_fd);
 }
 
+ssize_t gateway_socket_send(int socket_fd_remote, void *buffer, size_t send_bytes)
+{
+    return send(socket_fd_remote, buffer, send_bytes, 0);
+}
+
 ssize_t gateway_socket_receive(int socket_fd_remote, void *buffer, size_t max_recv_bytes)
 {
     return recv(socket_fd_remote, buffer, max_recv_bytes, 0);
