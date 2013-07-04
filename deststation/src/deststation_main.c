@@ -45,12 +45,14 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
 {
     int ind;
     deststation_error_code_t err_code = DESTSTATION_SUCCESS;
+    send_vector_val_pos_data_to_gateway_t send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
+            .header = "pos"
+    };
     send_client_type_data_to_gateway_t send_client_type_data = (send_client_type_data_to_gateway_t) {
         .header = "typ",
         .client_type = CLIENT_TYPE_DESTSTATION
     };
     char header_info_for_start_from_gateway[4];
-    char header_info_for_end_to_gateway[4];
 
     /* Send type of client to GateWay */
     if (-1 == deststation_socket_send(socket_fd_remote, &send_client_type_data, sizeof(send_client_type_data)))
@@ -84,9 +86,6 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
     while (g_vector_res_ind_size > 0)
     {
         int sleep_time, vector_ind;
-        send_vector_val_pos_data_to_gateway_t send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
-            .header = "pos"
-        };
         recv_vector_val_data_from_gateway_t recv_vector_val_data;
         
         vector_ind = get_random_vector_index();
@@ -129,10 +128,15 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
         --g_vector_res_ind_size;
     }
 
+    send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
+            .header = "pos",
+            .vector_val_pos = -1
+    };
+
     /* Send 'end' command to GateWay */
     if (-1 == deststation_socket_send(socket_fd_remote,
-                                      &header_info_for_end_to_gateway,
-                                      sizeof(header_info_for_end_to_gateway)))
+                                      &send_vector_val_pos_data,
+                                      sizeof(send_vector_val_pos_data)))
     {
         err_code = DESTSTATION_SEND_IPC_SOCKET_ERROR;
         goto error;

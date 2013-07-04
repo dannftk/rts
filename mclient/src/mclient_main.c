@@ -18,7 +18,7 @@
 
 static int g_mtrx[ROWS][COLUMNS];
 static int g_mtrx_col_index[COLUMNS];
-static int g_mtrx_col_ind_size = COLUMNS;
+static int g_mtrx_col_ind_size;
 
 static void print_mtrx(void)
 {
@@ -137,6 +137,8 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
             g_mtrx_col_index[ind] = ind;
         }
 
+        g_mtrx_col_ind_size = COLUMNS;
+
         while (g_mtrx_col_ind_size > 0)
         {
             int col_mtrx_ind;
@@ -158,8 +160,6 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
 
             --g_mtrx_col_ind_size;
         }
-
-        g_mtrx_col_ind_size = COLUMNS;
     }
 
     error:
