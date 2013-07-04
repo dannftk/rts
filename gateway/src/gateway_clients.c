@@ -180,6 +180,9 @@ static void deststation_handler(void)
 {
     recv_vector_pos_from_deststation_data_t recv_vector_pos_from_deststation_data;
 
+    char header_vector_data_request[4];
+    send_mtrx_row_data_request_t send_mtrx_row_data;
+
     if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_DESTSTATION].socket_fd,
                                      &recv_vector_pos_from_deststation_data,
                                      sizeof(recv_vector_pos_from_deststation_data)))
@@ -189,8 +192,8 @@ static void deststation_handler(void)
 
     if (!strcmp(recv_vector_pos_from_deststation_data.header, "pos"))
     {
-        char header_vector_data_request[4] = "vec";
-        send_mtrx_row_data_request_t send_mtrx_row_data = (send_mtrx_row_data_request_t) {
+        strcpy(header_vector_data_request, "vec");
+        send_mtrx_row_data = (send_mtrx_row_data_request_t) {
             .header = "mtr",
             .row = recv_vector_pos_from_deststation_data.vector_val_pos
         };
@@ -225,32 +228,36 @@ static void deststation_handler(void)
     }
     else if (!strcmp(recv_vector_pos_from_deststation_data.header, "end"))
     {
-        char header_info_end_for_clients[4] = "end";
+        strcpy(header_vector_data_request, "end");
+        send_mtrx_row_data = (send_mtrx_row_data_request_t) {
+            .header = "mtr",
+            .row = -1
+        };
 
         if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_MCLIENT_A].socket_fd,
-                                      &header_info_end_for_clients,
-                                      sizeof(header_info_end_for_clients)))
+                                      &header_vector_data_request,
+                                      sizeof(header_vector_data_request)))
         {
             GATEWAY_COMMON_ASSERT(0);
         }
 
         if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_MCLIENT_C].socket_fd,
-                                      &header_info_end_for_clients,
-                                      sizeof(header_info_end_for_clients)))
+                                      &header_vector_data_request,
+                                      sizeof(header_vector_data_request)))
         {
             GATEWAY_COMMON_ASSERT(0);
         }
 
         if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_VCLIENT_b].socket_fd,
-                                      &header_info_end_for_clients,
-                                      sizeof(header_info_end_for_clients)))
+                                      &header_vector_data_request,
+                                      sizeof(header_vector_data_request)))
         {
             GATEWAY_COMMON_ASSERT(0);
         }
 
         if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_VCLIENT_d].socket_fd,
-                                      &header_info_end_for_clients,
-                                      sizeof(header_info_end_for_clients)))
+                                      &header_vector_data_request,
+                                      sizeof(header_vector_data_request)))
         {
             GATEWAY_COMMON_ASSERT(0);
         }

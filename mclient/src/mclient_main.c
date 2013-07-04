@@ -107,6 +107,8 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
     /* endless loop for recieving commands from GateWay until 'end' will be occured */
     while (1)
     {
+        int ind;
+
         /* Recieve command from GateWay */
         if (-1 == mclient_socket_receive(socket_fd_remote,
                                          &recv_mtrx_row_request,
@@ -132,6 +134,11 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
             }
         }
 
+        for (ind = 0; ind < COLUMNS; ind++)
+        {
+            g_mtrx_col_index[ind] = ind;
+        }
+
         while (g_mtrx_col_ind_size > 0)
         {
             int col_mtrx_ind;
@@ -150,9 +157,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
             };
 
             /* Send matrix value */
-            mclient_socket_send(socket_fd_remote,
-                                &send_mtrx_data,
-                                sizeof(send_mtrx_data_t));
+            mclient_socket_send(socket_fd_remote, &send_mtrx_data, sizeof(send_mtrx_data_t));
 
             --g_mtrx_col_ind_size;
         }
