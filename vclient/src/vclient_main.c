@@ -20,17 +20,15 @@ static int g_vector[VECTOR_SIZE];
 static int g_vector_index[VECTOR_SIZE];
 static int g_vector_ind_size = VECTOR_SIZE;
 
-#if 0
 static void print_vector(void)
 {
     int pos;
     for (pos = 0; pos < VECTOR_SIZE; pos++)
     {
-        printf("%d ", g_vector_fmt[pos]);
+        printf("%d ", g_vector[pos]);
     }
     printf("\n");
 }
-#endif
 
 static enum vclient_error_code_e read_vector_from_file(char *vector_fp)
 {

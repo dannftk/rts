@@ -20,7 +20,6 @@ static int g_mtrx[ROWS][COLUMNS];
 static int g_mtrx_col_index[COLUMNS];
 static int g_mtrx_col_ind_size = COLUMNS;
 
-#if 0
 static void print_mtrx(void)
 {
     int row;
@@ -29,12 +28,11 @@ static void print_mtrx(void)
         int col;
         for (col = 0; col < COLUMNS; col++)
         {
-            printf("%d ", g_mtrx[row][col]]);
+            printf("%d ", g_mtrx[row][col]);
         }
         printf("\n");
     }
 }
-#endif
 
 static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
 {
