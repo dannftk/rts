@@ -10,18 +10,13 @@ typedef enum task_types_e {
     PUT_MTRX_C_VALUE,
     PUT_VECTOR_b_VALUE,
     PUT_VECTOR_d_VALUE,
-    MUL_VECTOR_b_VALUE_ON_MTRX_A_COL,
-    MUL_VECTOR_d_VALUE_ON_MTRX_C_COL,
     MUL_MTRX_A_VALUE_ON_VEC_b_VALUE,
     MUL_MTRX_C_VALUE_ON_VEC_d_VALUE,
+    MUL_VECTOR_b_VALUE_ON_MTRX_A_VALUE,
+    MUL_VECTOR_d_VALUE_ON_MTRX_C_VALUE,
     ADD_RES_Ab_VECTOR_VALUE_TO_RES_VECTOR_VALUE,
     ADD_RES_Cd_VECTOR_VALUE_TO_RES_VECTOR_VALUE,
-    SEND_VELUE_TO_DESTSTATION,
-    END_DESTSTATION,
-    END_MTRX_A,
-    END_MTRX_C,
-    END_VECTOR_b,
-    END_VECTOR_d
+    SEND_VELUE_TO_DESTSTATION
 } task_types_t;
 
 typedef struct task_data_s {
@@ -29,9 +24,8 @@ typedef struct task_data_s {
     union {
         mtrx_fmt_t mtrx;
         vector_fmt_t vector;
-        mtrx_val_pos_t mtrx_val_pos;
+        int mtrx_col_val_pos;
         int vector_val_pos;
-        int value_position;
     } data;
 } task_data_t;
 
@@ -39,17 +33,12 @@ void gateway_tasks_put_mtrx_A_value(mtrx_fmt_t mtrx);
 void gateway_tasks_put_mtrx_C_value(mtrx_fmt_t mtrx);
 void gateway_tasks_put_vector_b_value(vector_fmt_t vector);
 void gateway_tasks_put_vector_d_value(vector_fmt_t vector);
-void gateway_tasks_mul_vec_b_value_on_column_mtrx_A(int vector_val_pos);
-void gateway_tasks_mul_vec_d_value_on_column_mtrx_C(int vector_val_pos);
-void gateway_tasks_mul_mtrx_A_val_on_vector_b_val(mtrx_val_pos_t mtrx_val_pos);
-void gateway_tasks_mul_mtrx_C_val_on_vector_d_val(mtrx_val_pos_t mtrx_val_pos);
-void gateway_tasks_add_Ab_vector_res_val_to_res_vector_val(int value_position);
-void gateway_tasks_add_Cd_vector_res_val_to_res_vector_val(int value_position);
-void gateway_tasks_send_value_to_destination_station(int value_position);
-void gateway_tasks_send_end_signal_to_destination_station(void);
-void gateway_tasks_handle_end_mtrx_A_signal(void);
-void gateway_tasks_handle_end_mtrx_C_signal(void);
-void gateway_tasks_handle_end_vector_b_signal(void);
-void gateway_tasks_handle_end_vector_d_signal(void);
+void gateway_tasks_mul_mtrx_A_val_on_vector_b_val(int mtrx_col_val_pos);
+void gateway_tasks_mul_mtrx_C_val_on_vector_d_val(int mtrx_col_val_pos);
+void gateway_tasks_mul_vector_b_val_on_mtrx_A_val(int vector_val_pos);
+void gateway_tasks_mul_vector_d_val_on_mtrx_C_val(int vector_val_pos);
+void gateway_tasks_add_Ab_vector_res_val_to_res_vector_val(void);
+void gateway_tasks_add_Cd_vector_res_val_to_res_vector_val(void);
+void gateway_tasks_send_value_to_destination_station(void);
 
 #endif /* GATEWAY_TASKS_H */

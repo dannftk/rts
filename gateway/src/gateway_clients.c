@@ -60,21 +60,17 @@ static void mclient_A_handler(void)
 {
     recv_mtrx_data_t recv_mtrx_data;
     task_data_t task_data;
-    
-    memset(&recv_mtrx_data, 0, sizeof(recv_mtrx_data));
-    memset(&task_data, 0, sizeof(task_data));
 
-    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_MCLIENT_A].socket_fd, &recv_mtrx_data, sizeof(recv_mtrx_data)))
+    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_MCLIENT_A].socket_fd,
+                                     &recv_mtrx_data,
+                                     sizeof(recv_mtrx_data)))
     {
         GATEWAY_COMMON_ASSERT(0);
     }
 
-    if (!strcmp(recv_mtrx_data.header, "end"))
-    {
-        task_data.task_type = END_MTRX_A;
-        gateway_scheduler_add_task_to_queue(task_data);
-    }
-    else if (!strcmp(recv_mtrx_data.header, "mtr"))
+    memset(&task_data, 0, sizeof(task_data));
+
+    if (!strcmp(recv_mtrx_data.header, "mtr"))
     {
         task_data.task_type = PUT_MTRX_A_VALUE;
         task_data.data.mtrx = recv_mtrx_data.mtrx;
@@ -91,20 +87,16 @@ static void mclient_C_handler(void)
     recv_mtrx_data_t recv_mtrx_data;
     task_data_t task_data;
     
-    memset(&recv_mtrx_data, 0, sizeof(recv_mtrx_data));
-    memset(&task_data, 0, sizeof(task_data));
-    
-    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_MCLIENT_C].socket_fd, &recv_mtrx_data, sizeof(recv_mtrx_data)))
+    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_MCLIENT_C].socket_fd,
+                                     &recv_mtrx_data,
+                                     sizeof(recv_mtrx_data)))
     {
         GATEWAY_COMMON_ASSERT(0);
     }
 
-    if (!strcmp(recv_mtrx_data.header, "end"))
-    {
-        task_data.task_type = END_MTRX_C;
-        gateway_scheduler_add_task_to_queue(task_data);
-    }
-    else if (!strcmp(recv_mtrx_data.header, "mtr"))
+    memset(&task_data, 0, sizeof(task_data));
+    
+    if (!strcmp(recv_mtrx_data.header, "mtr"))
     {
         task_data.task_type = PUT_MTRX_C_VALUE;
         task_data.data.mtrx = recv_mtrx_data.mtrx;
@@ -121,20 +113,16 @@ static void vclient_b_handler(void)
     recv_vector_data_t recv_vector_data;
     task_data_t task_data;
     
-    memset(&recv_vector_data, 0, sizeof(recv_vector_data));
     memset(&task_data, 0, sizeof(task_data));
     
-    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_VCLIENT_b].socket_fd, &recv_vector_data, sizeof(recv_vector_data)))
+    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_VCLIENT_b].socket_fd,
+                                     &recv_vector_data,
+                                     sizeof(recv_vector_data)))
     {
         GATEWAY_COMMON_ASSERT(0);
     }
-
-    if (!strcmp(recv_vector_data.header, "end"))
-    {
-        task_data.task_type = END_VECTOR_b;
-        gateway_scheduler_add_task_to_queue(task_data);
-    }
-    else if (!strcmp(recv_vector_data.header, "vec"))
+    
+    if (!strcmp(recv_vector_data.header, "vec"))
     {
         task_data.task_type = PUT_VECTOR_b_VALUE;
         task_data.data.vector = recv_vector_data.vector;
@@ -151,20 +139,16 @@ static void vclient_d_handler(void)
     recv_vector_data_t recv_vector_data;
     task_data_t task_data;
     
-    memset(&recv_vector_data, 0, sizeof(recv_vector_data));
     memset(&task_data, 0, sizeof(task_data));
 
-    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_VCLIENT_d].socket_fd, &recv_vector_data, sizeof(recv_vector_data)))
+    if (-1 == gateway_socket_receive(g_gateway_clients[GATEWAY_CLIENT_TYPE_VCLIENT_d].socket_fd,
+                                     &recv_vector_data,
+                                     sizeof(recv_vector_data)))
     {
         GATEWAY_COMMON_ASSERT(0);
     }
 
-    if (!strcmp(recv_vector_data.header, "end"))
-    {
-        task_data.task_type = END_VECTOR_d;
-        gateway_scheduler_add_task_to_queue(task_data);
-    }
-    else if (!strcmp(recv_vector_data.header, "vec"))
+    if (!strcmp(recv_vector_data.header, "vec"))
     {
         task_data.task_type = PUT_VECTOR_d_VALUE;
         task_data.data.vector = recv_vector_data.vector;

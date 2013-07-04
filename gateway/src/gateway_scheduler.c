@@ -57,41 +57,26 @@ void gateway_scheduler_process_task(task_data_t task_data)
         case PUT_VECTOR_d_VALUE:
             gateway_tasks_put_vector_d_value(task_data.data.vector);
             break;
-        case MUL_VECTOR_b_VALUE_ON_MTRX_A_COL:
-            gateway_tasks_mul_vec_b_value_on_column_mtrx_A(task_data.data.vector_val_pos);
-            break;
-        case MUL_VECTOR_d_VALUE_ON_MTRX_C_COL:
-            gateway_tasks_mul_vec_d_value_on_column_mtrx_C(task_data.data.vector_val_pos);
-            break;        
         case MUL_MTRX_A_VALUE_ON_VEC_b_VALUE:
-            gateway_tasks_mul_mtrx_A_val_on_vector_b_val(task_data.data.mtrx_val_pos);
+            gateway_tasks_mul_mtrx_A_val_on_vector_b_val(task_data.data.mtrx_col_val_pos);
             break;
         case MUL_MTRX_C_VALUE_ON_VEC_d_VALUE:
-            gateway_tasks_mul_mtrx_C_val_on_vector_d_val(task_data.data.mtrx_val_pos);
+            gateway_tasks_mul_mtrx_C_val_on_vector_d_val(task_data.data.mtrx_col_val_pos);
+            break;
+        case MUL_VECTOR_b_VALUE_ON_MTRX_A_VALUE:
+            gateway_tasks_mul_vector_b_val_on_mtrx_A_val(task_data.data.vector_val_pos);
+            break;
+        case MUL_VECTOR_d_VALUE_ON_MTRX_C_VALUE:
+            gateway_tasks_mul_vector_d_val_on_mtrx_C_val(task_data.data.vector_val_pos);
             break;
         case ADD_RES_Ab_VECTOR_VALUE_TO_RES_VECTOR_VALUE:
-            gateway_tasks_add_Ab_vector_res_val_to_res_vector_val(task_data.data.value_position);
+            gateway_tasks_add_Ab_vector_res_val_to_res_vector_val();
             break;
         case ADD_RES_Cd_VECTOR_VALUE_TO_RES_VECTOR_VALUE:
-            gateway_tasks_add_Cd_vector_res_val_to_res_vector_val(task_data.data.value_position);
+            gateway_tasks_add_Cd_vector_res_val_to_res_vector_val();
             break;
         case SEND_VELUE_TO_DESTSTATION:
-            gateway_tasks_send_value_to_destination_station(task_data.data.value_position);
-            break;
-        case END_DESTSTATION:
-            gateway_tasks_send_end_signal_to_destination_station();
-            break;
-        case END_MTRX_A:
-            gateway_tasks_handle_end_mtrx_A_signal();
-            break;
-        case END_MTRX_C:
-            gateway_tasks_handle_end_mtrx_C_signal();
-            break;
-        case END_VECTOR_b:
-            gateway_tasks_handle_end_vector_b_signal();
-            break;
-        case END_VECTOR_d:
-            gateway_tasks_handle_end_vector_d_signal();
+            gateway_tasks_send_value_to_destination_station();
             break;
         default:
             GATEWAY_COMMON_ASSERT(0);

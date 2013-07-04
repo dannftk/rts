@@ -3,8 +3,8 @@
 #ifndef DESTSTATION_MAIN_H
 #define DESTSTATION_MAIN_H
 
-#define MIN_SLEEP_TIME_MLS 1000
-#define MAX_SLEEP_TIME_MLS 1500
+#define MIN_SLEEP_TIME_MLS 2000
+#define MAX_SLEEP_TIME_MLS 4000
 
 #define VECTOR_SIZE 3
 
@@ -21,8 +21,8 @@ typedef struct send_vector_val_pos_data_to_gateway_s {
 } send_vector_val_pos_data_to_gateway_t;
 
 typedef struct recv_vector_val_data_from_gateway_s {
-	char header[4];
-	int vector_val;
+    char header[4];
+    int vector_val;
 } recv_vector_val_data_from_gateway_t;
 
 #endif /* DESTSTATION_MAIN_H */

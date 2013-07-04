@@ -149,8 +149,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
             col_mtrx_ind = get_col_mtrx_index();
 
             send_mtrx_data.mtrx = (mtrx_fmt_t) {
-                .pos.row = recv_mtrx_row_request.row,
-                .pos.col = col_mtrx_ind,
+                .col_pos = col_mtrx_ind,
                 .value = g_mtrx[recv_mtrx_row_request.row][col_mtrx_ind]
             };
 

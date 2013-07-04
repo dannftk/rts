@@ -115,7 +115,7 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
             goto error;
         }
 
-        if (strcmp(recv_vector_val_data.header, "val"))
+        if (strcmp(recv_vector_val_data.header, "vec"))
         {
             err_code = DESTSTATION_RECV_WRONG_DATA_FORMAT_ERROR;
             goto error;

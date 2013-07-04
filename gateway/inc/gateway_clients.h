@@ -35,13 +35,8 @@ typedef struct recv_client_type_data_s {
 
 /******/
 
-typedef struct mtrx_val_pos_s {
-    int row;
-    int col;
-} mtrx_val_pos_t;
-
 typedef struct mtrx_fmt_s {
-    mtrx_val_pos_t pos;
+    int col_pos;
     int value;
 } mtrx_fmt_t;
 
