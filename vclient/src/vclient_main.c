@@ -18,7 +18,7 @@
 
 static int g_vector[VECTOR_SIZE];
 static int g_vector_index[VECTOR_SIZE];
-static int g_vector_ind_size = VECTOR_SIZE;
+static int g_vector_ind_size;
 
 static void print_vector(void)
 {
@@ -90,6 +90,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         err_code = VCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
+    printf("Type 'VClient' has been successfully sent to GateWay\n");
 
     init_random();
 
@@ -110,21 +111,28 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         /* If command if "end" then finish processing */
         if (!strcmp(header_info_vector_data_request, "end"))
         {
+            printf("Received command 'end' from GateWay. Finish processing and close remote connection\n");
             break;
         }
         else
         {
             if (strcmp(header_info_vector_data_request, "vec"))
             {
+                printf("Received unknown command from GateWay. Exit with error\n");
                 err_code = VCLIENT_RECV_WRONG_DATA_FORMAT_ERROR;
                 goto error;
             }
         }
 
+        printf("*****************\n");
+        printf("Recieved command 'vec' with request of vector\n");
+
         for (ind = 0; ind < VECTOR_SIZE; ind++)
         {
             g_vector_index[ind] = ind;
         }
+
+        g_vector_ind_size = VECTOR_SIZE;
 
         while (g_vector_ind_size > 0)
         {
@@ -133,8 +141,6 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
                 .header = "vec"
             };
 
-            sleep(get_random_time());
-
             vector_index = get_vector_index();
 
             send_vector_data.vector = (vector_fmt_t) {
@@ -142,16 +148,26 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
                 .value = g_vector[vector_index]
             };
 
+            printf("Data for sending was configured. POS = %d, VAL = %d\n. Wait for sending...",
+                   send_vector_data.vector.pos,
+                   send_vector_data.vector.value);
+
+            sleep(get_random_time());
+
             /* Send vector value */
             vclient_socket_send(socket_fd_remote, &send_vector_data, sizeof(send_vector_data));
+            printf("Data has been successfully sent\n");
 
             --g_vector_ind_size;
         }
 
-        g_vector_ind_size = VECTOR_SIZE;
+        printf("\nAll elements of vector was successfully sent\nWait new commands...\n");
+
     }
 
     error:
+
+    printf("Finishing processing of 'VClient'");
 
     return err_code;
 }
@@ -162,6 +178,15 @@ int main(int const argc, char const *argv[])
     size_t vector_fp_len;
 
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
+
+    printf("VClient parameters:\n");
+
+    int i;
+    for (i = 0; i < argc; i++)
+    {
+        printf("argv[%d] = %s", i, argv[i]);
+    }
+    printf("\n");
 
     if (3 != argc)
     {
@@ -185,19 +210,25 @@ int main(int const argc, char const *argv[])
             err_code = VCLIENT_CREATE_IPC_SOCKET_ERROR;
             goto error;
         }
+        printf("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
         
         if (-1 == vclient_socket_connect_socket(socket_fd_remote))
         {
             err_code = VCLIENT_CONNECT_IPC_SOCKET_ERROR;
             goto error;
         }
+        printf("VClient was successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
 
+        printf("Begin processing...\n");
         err_code = begin_process(socket_fd_remote, (vclients_types_t)atoi(argv[2]));
 
         vclient_socket_close_socket(socket_fd_remote);
+        printf("Socket for remote connection with GateWay has just been closed. SOCKET_FD = %d\n", socket_fd_remote);
     }
 
     error:
+
+    printf("Finishing 'VClient'\n");
 
     return err_code;
 }

@@ -99,6 +99,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         err_code = MCLIENT_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
+    printf("Type 'MClient' has been successfully sent to GateWay\n");
 
     init_random();
 
@@ -120,6 +121,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         if (!strcmp(recv_mtrx_row_request.header, "end") &&
             -1 == recv_mtrx_row_request.row)
         {
+            printf("Recieved command 'end' from GateWay. Finish processing and close remote connection\n");
             break;
         }
         else
@@ -127,10 +129,14 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
             /* If command is not "mtr" then generate error */
             if (strcmp(recv_mtrx_row_request.header, "mtr"))
             {
+                printf("Received unknown command from GateWay. Exit with error\n");
                 err_code = MCLIENT_RECV_WRONG_DATA_FORMAT_ERROR;
                 goto error;
             }
         }
+
+        printf("*****************\n");
+        printf("Recieved command 'mtr' with request number of row %d\n", recv_mtrx_row_request.row);
 
         for (ind = 0; ind < COLUMNS; ind++)
         {
@@ -146,8 +152,6 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
                 .header = "mtr"
             };
 
-            sleep(get_random_time());
-
             col_mtrx_ind = get_col_mtrx_index();
 
             send_mtrx_data.mtrx = (mtrx_fmt_t) {
@@ -155,14 +159,28 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
                 .value = g_mtrx[recv_mtrx_row_request.row][col_mtrx_ind]
             };
 
+            printf("Data for sending was configured. ROW = %d, COL = %d, VAL = %d\n. Wait for sending...",
+                   recv_mtrx_row_request.row,
+                   send_mtrx_data.mtrx.col_pos,
+                   send_mtrx_data.mtrx.value);
+
+            sleep(get_random_time());
+
             /* Send matrix value */
             mclient_socket_send(socket_fd_remote, &send_mtrx_data, sizeof(send_mtrx_data_t));
+            printf("Data has been successfully sent\n");
 
             --g_mtrx_col_ind_size;
         }
+
+        printf("\nAll elements of matrix row %d was successfully sent"
+               "\nWait new commands...\n",
+               recv_mtrx_row_request.row);
     }
 
     error:
+
+    printf("Finishing processing of 'MClient'");
 
     return err_code;
 }
@@ -173,6 +191,15 @@ int main(int const argc, char const *argv[])
     size_t mtrx_fp_len;
 
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
+
+    printf("MClient parameters:\n");
+
+    int i;
+    for (i = 0; i < argc; i++)
+    {
+        printf("argv[%d] = %s", i, argv[i]);
+    }
+    printf("\n");
 
     if (3 != argc)
     {
@@ -196,19 +223,25 @@ int main(int const argc, char const *argv[])
             err_code = MCLIENT_CREATE_IPC_SOCKET_ERROR;
             goto error;
         }
+        printf("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
         
         if (-1 == mclient_socket_connect_socket(socket_fd_remote))
         {
             err_code = MCLIENT_CONNECT_IPC_SOCKET_ERROR;
             goto error;
         }
+        printf("MClient was successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
 
+        printf("Begin processing...\n");
         err_code = begin_process(socket_fd_remote, (mclients_types_t)atoi(argv[2]));
 
         mclient_socket_close_socket(socket_fd_remote);
+        printf("Socket for remote connection with GateWay has just been closed. SOCKET_FD = %d\n", socket_fd_remote);
     }
 
     error:
+
+    printf("Finishing 'MClient'\n");
 
     return err_code;
 }
