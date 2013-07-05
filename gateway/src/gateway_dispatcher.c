@@ -10,7 +10,8 @@
 #include "gateway_scheduler.h"
 #include "gateway_tasks.h"
 
-#define DISPATCHER_SLEEP_MS 100
+#define MICROSECONDS_IN_MILLISECONDS 1000
+#define DISPATCHER_SLEEP_MS 1000
 
 pthread_t disp_thread_id;
 FILE *disp_f;
@@ -60,7 +61,7 @@ static void process_task(task_data_t task_data)
     }
 }
 
-static void* process_messages(void *arg)
+void* process_messages(void *arg)
 {
     clock_t time_begin_process, time_end_process;
 
@@ -86,14 +87,17 @@ static void* process_messages(void *arg)
         else
         {
             fprintf(disp_f, "Queue is empty. Sleeping for %d...\n", DISPATCHER_SLEEP_MS);
-            sleep(DISPATCHER_SLEEP_MS);
+            usleep(DISPATCHER_SLEEP_MS * MICROSECONDS_IN_MILLISECONDS);
         }
+        
+        fflush(disp_f);
     }
+
     time_end_process = clock();
 
     fprintf(disp_f,
             "RTS has completed the task for %3.3f second(s)\n",
-            ((float)(time_end_process - time_begin_process))/CLOCKS_PER_SEC);
+            (float)(time_end_process - time_begin_process)/CLOCKS_PER_SEC * 1000);
     fprintf(disp_f, "Finish dispatcher\n\n");
 
     fclose(disp_f);
@@ -106,7 +110,7 @@ void gateway_dispatcher_run_dispatcher(void)
     disp_f = fopen("dispatcher.log", "a");
     if (NULL != disp_f)
     {
-        if (!pthread_create(&disp_thread_id, NULL, &process_messages, NULL))
+        if (pthread_create(&disp_thread_id, NULL, &process_messages, NULL))
         {
             GATEWAY_COMMON_ASSERT(0);
         }

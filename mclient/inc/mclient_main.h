@@ -3,8 +3,8 @@
 #ifndef MCLIENT_MAIN_H
 #define MCLIENT_MAIN_H
 
-#define MIN_SLEEP_TIME_MLS 200
-#define MAX_SLEEP_TIME_MLS 400
+#define MIN_SLEEP_TIME_MLS 1000
+#define MAX_SLEEP_TIME_MLS 1500
 
 #define ROWS 3
 #define COLUMNS 3

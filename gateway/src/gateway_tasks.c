@@ -1,5 +1,8 @@
 /* encoding: UTF-8 */
 
+#include <stdio.h>
+#include <string.h>
+
 #include "gateway_common.h"
 #include "gateway_scheduler.h"
 #include "gateway_tasks.h"
@@ -36,7 +39,8 @@ void gateway_tasks_put_mtrx_A_value(mtrx_fmt_t mtrx)
     g_mtrx_A_row[mtrx.col_pos] = mtrx.value;
     g_mtrx_A_row_written[mtrx.col_pos] = 1;
 
-    if (g_vector_b_written[mtrx.col_pos])
+    if (g_vector_b_written[mtrx.col_pos] &&
+        2 != g_mtrx_A_row_written[mtrx.col_pos])
     {
         task_data_t task_data = {
             .task_type = MUL_MTRX_A_VALUE_ON_VEC_b_VALUE,
@@ -52,7 +56,8 @@ void gateway_tasks_put_mtrx_C_value(mtrx_fmt_t mtrx)
     g_mtrx_C_row[mtrx.col_pos] = mtrx.value;
     g_mtrx_C_row_written[mtrx.col_pos] = 1;
 
-    if (g_vector_d_written[mtrx.col_pos])
+    if (g_vector_d_written[mtrx.col_pos] &&
+        2 != g_mtrx_C_row_written[mtrx.col_pos])
     {
         task_data_t task_data = {
             .task_type = MUL_MTRX_C_VALUE_ON_VEC_d_VALUE,
@@ -68,7 +73,7 @@ void gateway_tasks_put_vector_b_value(vector_fmt_t vector)
     g_vector_b[vector.pos] = vector.value;
     g_vector_b_written[vector.pos] = 1;
 
-    if (1 == g_mtrx_A_row[vector.pos])
+    if (1 == g_mtrx_A_row_written[vector.pos])
     {
         task_data_t task_data = {
             .task_type = MUL_VECTOR_b_VALUE_ON_MTRX_A_VALUE,
@@ -84,7 +89,7 @@ void gateway_tasks_put_vector_d_value(vector_fmt_t vector)
     g_vector_d[vector.pos] = vector.value;
     g_vector_d_written[vector.pos] = 1;
 
-    if (1 == g_mtrx_C_row[vector.pos])
+    if (1 == g_mtrx_C_row_written[vector.pos])
     {
         task_data_t task_data = {
             .task_type = MUL_VECTOR_d_VALUE_ON_MTRX_C_VALUE,
@@ -105,6 +110,12 @@ void gateway_tasks_mul_mtrx_A_val_on_vector_b_val(int mtrx_col_val_pos)
 
         if (COLUMNS == g_vector_Ab_res_rec_count)
         {
+            memset(g_mtrx_A_row, 0, COLUMNS);
+            memset(g_mtrx_A_row_written, 0, COLUMNS);
+            memset(g_vector_b, 0, VECTOR_SIZE);
+            memset(g_vector_b_written, 0, VECTOR_SIZE);
+            g_vector_Ab_res_rec_count = 0;
+
             task_data_t task_data = {
                 .task_type = ADD_RES_Ab_VECTOR_VALUE_TO_RES_VECTOR_VALUE
             };
@@ -124,6 +135,12 @@ void gateway_tasks_mul_mtrx_C_val_on_vector_d_val(int mtrx_col_val_pos)
 
         if (COLUMNS == g_vector_Cd_res_rec_count)
         {
+            memset(g_mtrx_C_row, 0, COLUMNS);
+            memset(g_mtrx_C_row_written, 0, COLUMNS);
+            memset(g_vector_d, 0, VECTOR_SIZE);
+            memset(g_vector_d_written, 0, VECTOR_SIZE);
+            g_vector_Cd_res_rec_count = 0;
+
             task_data_t task_data = {
                 .task_type = ADD_RES_Cd_VECTOR_VALUE_TO_RES_VECTOR_VALUE
             };
@@ -135,7 +152,8 @@ void gateway_tasks_mul_mtrx_C_val_on_vector_d_val(int mtrx_col_val_pos)
 
 void gateway_tasks_mul_vector_b_val_on_mtrx_A_val(int vector_val_pos)
 {
-    if (1 == g_vector_b[vector_val_pos])
+    if (g_vector_b_written[vector_val_pos] &&
+        2 != g_mtrx_A_row_written[vector_val_pos])
     {
         g_vector_Ab_res_val += g_mtrx_A_row[vector_val_pos] * g_vector_b[vector_val_pos];
         g_mtrx_A_row_written[vector_val_pos] = 2;
@@ -143,6 +161,12 @@ void gateway_tasks_mul_vector_b_val_on_mtrx_A_val(int vector_val_pos)
 
         if (COLUMNS == g_vector_Ab_res_rec_count)
         {
+            memset(g_mtrx_A_row, 0, COLUMNS);
+            memset(g_mtrx_A_row_written, 0, COLUMNS);
+            memset(g_vector_b, 0, VECTOR_SIZE);
+            memset(g_vector_b_written, 0, VECTOR_SIZE);
+            g_vector_Ab_res_rec_count = 0;
+
             task_data_t task_data = {
                 .task_type = ADD_RES_Ab_VECTOR_VALUE_TO_RES_VECTOR_VALUE
             };
@@ -154,7 +178,8 @@ void gateway_tasks_mul_vector_b_val_on_mtrx_A_val(int vector_val_pos)
 
 void gateway_tasks_mul_vector_d_val_on_mtrx_C_val(int vector_val_pos)
 {
-    if (1 == g_vector_d[vector_val_pos])
+    if (g_vector_d_written[vector_val_pos] &&
+        2 != g_mtrx_C_row_written[vector_val_pos])
     {
         g_vector_Cd_res_val += g_mtrx_C_row[vector_val_pos] * g_vector_d[vector_val_pos];
         g_mtrx_C_row_written[vector_val_pos] = 2;
@@ -162,6 +187,12 @@ void gateway_tasks_mul_vector_d_val_on_mtrx_C_val(int vector_val_pos)
 
         if (COLUMNS == g_vector_Cd_res_rec_count)
         {
+            memset(g_mtrx_C_row, 0, COLUMNS);
+            memset(g_mtrx_C_row_written, 0, COLUMNS);
+            memset(g_vector_d, 0, VECTOR_SIZE);
+            memset(g_vector_d_written, 0, VECTOR_SIZE);
+            g_vector_Cd_res_rec_count = 0;
+
             task_data_t task_data = {
                 .task_type = ADD_RES_Cd_VECTOR_VALUE_TO_RES_VECTOR_VALUE
             };
@@ -178,6 +209,11 @@ void gateway_tasks_add_Ab_vector_res_val_to_res_vector_val(void)
 
     if (2 == g_vector_res_rec_count)
     {
+        g_vector_res_rec_count = 0;
+
+        g_vector_Ab_res_val = 0;
+        g_vector_Cd_res_val = 0;
+
         task_data_t task_data = {
             .task_type = SEND_VELUE_TO_DESTSTATION
         };
@@ -193,6 +229,11 @@ void gateway_tasks_add_Cd_vector_res_val_to_res_vector_val(void)
 
     if (2 == g_vector_res_rec_count)
     {
+        g_vector_res_rec_count = 0;
+
+        g_vector_Ab_res_val = 0;
+        g_vector_Cd_res_val = 0;
+
         task_data_t task_data = {
             .task_type = SEND_VELUE_TO_DESTSTATION
         };
@@ -207,6 +248,8 @@ void gateway_tasks_send_value_to_destination_station(void)
         .header = "vec",
         .vector_val = g_vector_res_val
     };
+
+    g_vector_res_val = 0;
 
     if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_DESTSTATION].socket_fd, 
                                   &send_vector_value_to_deststation_data,

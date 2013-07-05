@@ -1,5 +1,7 @@
 /* encoding: UTF-8 */
 
+#include <sys/socket.h>
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,6 +10,9 @@
 #include "deststation_common.h"
 #include "deststation_main.h"
 #include "deststation_socket.h"
+
+#define DESTSTATION_SLEEP_TIME_MS 5000
+#define MICROSECONDS_IN_MILLISECONDS 1000
 
 static int g_vector_res[VECTOR_SIZE];
 static int g_vector_res_ind[VECTOR_SIZE];
@@ -25,12 +30,12 @@ static void print_vector(void)
 
 static int get_random_time(void)
 {
-    return MIN_SLEEP_TIME_MLS + rand() * (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
+    return MIN_SLEEP_TIME_MLS + rand() % (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
 }
 
 static int get_random_vector_index(void)
 {
-    int index_of_vector_index = (int)(rand() * g_vector_res_ind_size);
+    int index_of_vector_index = rand() % g_vector_res_ind_size;
     int vector_index = g_vector_res_ind[index_of_vector_index];
     g_vector_res_ind[index_of_vector_index] = g_vector_res_ind[g_vector_res_ind_size - 1];
     return vector_index;
@@ -62,11 +67,12 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
     }
     printf("Type 'DestStation' has been successfully sent to GateWay\n");
 
-    printf("\nWait new command 'Start' from GateWay...");
+    printf("Wait new command 'Start' from GateWay...\n");
     /* Wait for command 'start' from GateWay */
     if (-1 == deststation_socket_receive(socket_fd_remote,
                                          header_info_for_start_from_gateway,
-                                         sizeof(header_info_for_start_from_gateway)))
+                                         sizeof(header_info_for_start_from_gateway),
+                                         0x0))
     {
         err_code = DESTSTATION_RECV_IPC_SOCKET_ERROR;
         goto error;
@@ -80,9 +86,9 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
     }
 
     printf("*****************\n");
-    printf("Recieved command 'Start' for processing of sequence of requests\n");
+    printf("Received command 'Start' for processing of sequence of requests\n");
 
-    for (ind = 0; ind < g_vector_res_ind_size; ind++)
+    for (ind = 0; ind < VECTOR_SIZE; ind++)
     {
         g_vector_res_ind[ind] = ind;
     }
@@ -91,7 +97,7 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
 
     while (g_vector_res_ind_size > 0)
     {
-        int sleep_time, vector_ind;
+        int vector_ind;
         recv_vector_val_data_from_gateway_t recv_vector_val_data;
         
         vector_ind = get_random_vector_index();
@@ -110,18 +116,21 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
         send_vector_val_pos_data.header,
         send_vector_val_pos_data.vector_val_pos);
 
-        sleep_time = get_random_time();
-        printf("Sleeping %d\n ms", sleep_time);
+        printf("Sleeping %d ms\n", DESTSTATION_SLEEP_TIME_MS);
 
-        sleep(sleep_time);
+        usleep(DESTSTATION_SLEEP_TIME_MS * MICROSECONDS_IN_MILLISECONDS);
 
+        printf("Try get result from GateWay RTS...\n");
+        fflush(stdout);
         /* Get result of request */
         if (-1 == deststation_socket_receive(socket_fd_remote, 
                                              &recv_vector_val_data,
-                                             sizeof(recv_vector_val_data)))
+                                             sizeof(recv_vector_val_data),
+                                             MSG_DONTWAIT))
         {
+            printf("Fatal Error. Real-Time error occured\n");
             err_code = DESTSTATION_RECV_IPC_SOCKET_ERROR;
-            goto error;
+            goto error_real_time;
         }
         printf("Result has been receieved from GateWay\n");
 
@@ -146,9 +155,11 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
     printf("Processing of sequence of requests is finished. Send 'end' command to GateWay\n");
 
     send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
-            .header = "pos",
+            .header = "end",
             .vector_val_pos = -1
     };
+
+    error_real_time:
 
     /* Send 'end' command to GateWay */
     if (-1 == deststation_socket_send(socket_fd_remote,

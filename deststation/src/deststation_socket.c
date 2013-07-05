@@ -39,7 +39,7 @@ ssize_t deststation_socket_send(int socket_fd_remote, void *buffer, size_t send_
     return send(socket_fd_remote, buffer, send_bytes, 0);
 }
 
-ssize_t deststation_socket_receive(int socket_fd_remote, void *buffer, size_t max_recv_bytes)
+ssize_t deststation_socket_receive(int socket_fd_remote, void *buffer, size_t max_recv_bytes, int flags)
 {
-    return recv(socket_fd_remote, buffer, max_recv_bytes, 0);
+    return recv(socket_fd_remote, buffer, max_recv_bytes, flags);
 }

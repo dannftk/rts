@@ -16,6 +16,8 @@
 #include "vclient_main.h"
 #include "vclient_socket.h"
 
+#define MICROSECONDS_IN_MILLISECONDS 1000
+
 static int g_vector[VECTOR_SIZE];
 static int g_vector_index[VECTOR_SIZE];
 static int g_vector_ind_size;
@@ -58,7 +60,7 @@ static enum vclient_error_code_e read_vector_from_file(char *vector_fp)
 
 static int get_random_time(void)
 {
-    return MIN_SLEEP_TIME_MLS + rand() * (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
+    return MIN_SLEEP_TIME_MLS + rand() % (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
 }
 
 static void init_random(void)
@@ -68,7 +70,7 @@ static void init_random(void)
 
 static int get_vector_index()
 {
-    int index_of_vector_index = (int)(rand() * g_vector_ind_size);
+    int index_of_vector_index = rand() % g_vector_ind_size;
     int vector_index = g_vector_index[index_of_vector_index];
     g_vector_index[index_of_vector_index] = g_vector_index[g_vector_ind_size - 1];
     return vector_index;
@@ -155,10 +157,13 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
                    send_vector_data.vector.pos,
                    send_vector_data.vector.value);
 
-            sleep(get_random_time());
+            usleep(get_random_time() * MICROSECONDS_IN_MILLISECONDS);
 
             /* Send vector value */
-            vclient_socket_send(socket_fd_remote, &send_vector_data, sizeof(send_vector_data));
+            if (-1 == vclient_socket_send(socket_fd_remote, &send_vector_data, sizeof(send_vector_data)))
+            {
+                VCLIENT_COMMON_ASSERT(0);
+            }
             printf("Data has been successfully sent\n");
 
             --g_vector_ind_size;

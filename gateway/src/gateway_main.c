@@ -71,6 +71,8 @@ static enum gateway_error_code_e begin_process(void)
                     g_gateway_clients[client_type].run_handler();
                 }
             }
+            gateway_clients_deactivate_registered_clients();
+            gateway_clients_activate_registered_clients();
         }
     }
 
@@ -103,7 +105,7 @@ int main(int const argc, char const *argv[])
         err_code = GATEWAY_BIND_IPC_SOCKET_ERROR;
         goto error;
     }
-    printf("Local socket was successfully bound\n");
+    printf("Local socket was successfully bound. SOCKET_FD = %d\n", socket_fd_local);
 
     printf("Listen socket for remote client connections\n");
     /* Listen this server-gateway socket for establishment of new connections */
@@ -119,10 +121,10 @@ int main(int const argc, char const *argv[])
             err_code = GATEWAY_LISTEN_IPC_SOCKET_ERROR;
             goto error_client;
         }
-        printf("Caught connection!\n");
-
         /* For each connection with new client we get new connection-oriented socket */
         socket_fd_remote = gateway_socket_accept_socket(socket_fd_local);
+
+        printf("Caught connection!\n");
         if (-1 == socket_fd_remote)
         {
             err_code = GATEWAY_ACCEPT_IPC_SOCKET_ERROR;
