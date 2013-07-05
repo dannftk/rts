@@ -99,7 +99,8 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         char header_info_vector_data_request[4];
         int ind;
 
-        printf("\nWait new commands from GateWay...");
+        printf("Wait new commands from GateWay...\n");
+        fflush(stdout);
         /* Recieve command from GateWay */
         if (-1 == vclient_socket_receive(socket_fd_remote,
                                          header_info_vector_data_request,
@@ -186,7 +187,7 @@ int main(int const argc, char const *argv[])
     int i;
     for (i = 0; i < argc; i++)
     {
-        printf("argv[%d] = %s", i, argv[i]);
+        printf("argv[%d] = %s\n", i, argv[i]);
     }
     printf("\n");
 

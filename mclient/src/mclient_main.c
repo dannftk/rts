@@ -108,7 +108,8 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
     {
         int ind;
 
-        printf("\nWait new commands from GateWay...");
+        printf("Wait new commands from GateWay...\n");
+        fflush(stdout);
         /* Recieve command from GateWay */
         if (-1 == mclient_socket_receive(socket_fd_remote,
                                          &recv_mtrx_row_request,
@@ -196,7 +197,7 @@ int main(int const argc, char const *argv[])
     int i;
     for (i = 0; i < argc; i++)
     {
-        printf("argv[%d] = %s", i, argv[i]);
+        printf("argv[%d] = %s\n", i, argv[i]);
     }
     printf("\n");
 

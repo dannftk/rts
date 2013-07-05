@@ -340,7 +340,7 @@ void gateway_clients_remove_registered_clients(void)
     }
 }
 
-static void gateway_clients_set_registered_client_onto_fdset(gateway_client_types_t client_type)
+static void gateway_clients_activate_registered_client(gateway_client_types_t client_type)
 {
     if (g_gateway_clients[client_type].registered_flag)
     {
@@ -355,7 +355,7 @@ static void gateway_clients_set_registered_client_onto_fdset(gateway_client_type
     }
 }
 
-void gateway_clients_set_registered_clients_onto_fdset(void)
+void gateway_clients_activate_registered_clients(void)
 {
     gateway_client_types_t client_type;
 
@@ -364,6 +364,6 @@ void gateway_clients_set_registered_clients_onto_fdset(void)
          client_type < GATEWAY_CLIENT_TYPES_COUNT;
          client_type = GATEWAY_CLIENTS_TYPES_NEXT(client_type))
     {
-        gateway_clients_set_registered_client_onto_fdset(client_type);
+        gateway_clients_activate_registered_client(client_type);
     }
 }
