@@ -9,6 +9,7 @@
 #include "gateway_socket.h"
 #include "gateway_scheduler.h"
 #include "gateway_tasks.h"
+#include "gateway_dispatcher.h"
 
 gateway_clients_t g_gateway_clients[GATEWAY_CLIENT_TYPES_COUNT];
 unsigned int g_gateway_clients_registered, g_gateway_clients_active;
@@ -211,6 +212,8 @@ static void deststation_handler(void)
         {
             GATEWAY_COMMON_ASSERT(0);
         }
+
+        gateway_dispatcher_run_dispatcher();
     }
     else if (!strcmp(recv_vector_pos_from_deststation_data.header, "end") &&
              -1 == recv_vector_pos_from_deststation_data.vector_val_pos)

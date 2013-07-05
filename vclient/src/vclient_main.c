@@ -81,7 +81,6 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         .header = "typ",
         .vclient_type = vclient_type
     };
-    char header_info_vector_data_request[4];
 
     /* Send type of client */
     if (-1 == vclient_socket_send(socket_fd_remote,
@@ -96,6 +95,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
 
     while (1)
     {
+        char header_info_vector_data_request[4];
         int ind;
 
         /* Recieve command from GateWay */

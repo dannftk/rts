@@ -8,6 +8,7 @@
 #include "gateway_common.h"
 #include "gateway_socket.h"
 #include "gateway_clients.h"
+#include "gateway_scheduler.h"
 
 extern gateway_clients_t g_gateway_clients[GATEWAY_CLIENT_TYPES_COUNT];
 extern unsigned int g_gateway_clients_active;
@@ -19,6 +20,9 @@ static enum gateway_error_code_e begin_process(void)
     gateway_error_code_t err_code = GATEWAY_SUCCESS;
     int result;
     char header_to_start_deststation[4] = "sta";
+
+    /* Initialize mutex for system */ 
+    gateway_scheduler_init_sync();
 
     /* Send 'start' command to deststation */
     if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_DESTSTATION].socket_fd,
@@ -58,6 +62,8 @@ static enum gateway_error_code_e begin_process(void)
             }
         }
     }
+
+    gateway_scheduler_deinit_sync();
 
     error:
 

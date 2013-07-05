@@ -13,5 +13,7 @@ typedef struct task_queue_s {
 void gateway_scheduler_add_task_to_queue(task_data_t task_data);
 int gateway_scheduler_get_ptask_from_queue(task_data_t *p_task_data);
 void gateway_scheduler_process_task(task_data_t task_data);
+void gateway_scheduler_init_sync(void);
+void gateway_scheduler_deinit_sync(void);
 
 #endif /* GATEWAY_SCHEDULER_H */
