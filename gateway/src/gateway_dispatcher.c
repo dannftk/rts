@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "gateway_common.h"
 #include "gateway_dispatcher.h"
@@ -18,7 +19,9 @@ extern unsigned int g_head_queue_ind, g_tail_queue_ind;
 
 static void* process_messages(void *arg)
 {
+    clock_t time_begin_process, time_end_process;
 
+    time_begin_process = clock();
     while (1)
     {
         task_data_t task_data;
@@ -38,6 +41,9 @@ static void* process_messages(void *arg)
             sleep(DISPATCHER_SLEEP_MS);
         }
     }
+    time_end_process = clock();
+
+    printf("RTS has completed the task for %3.3f second(s)\n", ((float)(time_end_process - time_begin_process))/CLOCKS_PER_SEC);
 
     return NULL;
 }
