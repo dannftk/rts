@@ -99,6 +99,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         char header_info_vector_data_request[4];
         int ind;
 
+        printf("\nWait new commands from GateWay...");
         /* Recieve command from GateWay */
         if (-1 == vclient_socket_receive(socket_fd_remote,
                                          header_info_vector_data_request,
@@ -148,7 +149,8 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
                 .value = g_vector[vector_index]
             };
 
-            printf("Data for sending was configured. POS = %d, VAL = %d\n. Wait for sending...",
+            printf("Data for sending was configured. HEAD = %s, POS = %d, VAL = %d\n. Wait for sending...\n",
+                   send_vector_data.header,
                    send_vector_data.vector.pos,
                    send_vector_data.vector.value);
 
@@ -161,13 +163,13 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
             --g_vector_ind_size;
         }
 
-        printf("\nAll elements of vector was successfully sent\nWait new commands...\n");
+        printf("\nAll elements of vector was successfully sent\n");
 
     }
 
     error:
 
-    printf("Finishing processing of 'VClient'");
+    printf("Finishing processing of 'VClient'\n");
 
     return err_code;
 }

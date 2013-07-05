@@ -108,6 +108,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
     {
         int ind;
 
+        printf("\nWait new commands from GateWay...");
         /* Recieve command from GateWay */
         if (-1 == mclient_socket_receive(socket_fd_remote,
                                          &recv_mtrx_row_request,
@@ -159,8 +160,8 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
                 .value = g_mtrx[recv_mtrx_row_request.row][col_mtrx_ind]
             };
 
-            printf("Data for sending was configured. ROW = %d, COL = %d, VAL = %d\n. Wait for sending...",
-                   recv_mtrx_row_request.row,
+            printf("Data for sending was configured. HEAD = %s COL = %d, VAL = %d\n. Wait for sending...\n",
+                   send_mtrx_data.header,
                    send_mtrx_data.mtrx.col_pos,
                    send_mtrx_data.mtrx.value);
 
@@ -173,14 +174,12 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
             --g_mtrx_col_ind_size;
         }
 
-        printf("\nAll elements of matrix row %d was successfully sent"
-               "\nWait new commands...\n",
-               recv_mtrx_row_request.row);
+        printf("\nAll elements of matrix row %d was successfully sent\n", recv_mtrx_row_request.row);
     }
 
     error:
 
-    printf("Finishing processing of 'MClient'");
+    printf("Finishing processing of 'MClient'\n");
 
     return err_code;
 }

@@ -60,7 +60,9 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
         err_code = DESTSTATION_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
+    printf("Type 'DestStation' has been successfully sent to GateWay\n");
 
+    printf("\nWait new command 'Start' from GateWay...");
     /* Wait for command 'start' from GateWay */
     if (-1 == deststation_socket_receive(socket_fd_remote,
                                          header_info_for_start_from_gateway,
@@ -72,9 +74,13 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
 
     if (strcmp(header_info_for_start_from_gateway, "sta"))
     {
+        printf("Received unknown command from GateWay. Exit with error\n");
         err_code = DESTSTATION_RECV_WRONG_DATA_FORMAT_ERROR;
         goto error;
     }
+
+    printf("*****************\n");
+    printf("Recieved command 'Start' for processing of sequence of requests\n");
 
     for (ind = 0; ind < g_vector_res_ind_size; ind++)
     {
@@ -100,6 +106,10 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
             goto error;
         }
 
+        printf("Data for sending request was configured. HEAD = %s, POS = %d\n. Wait for sending...\n",
+        send_vector_val_pos_data.header,
+        send_vector_val_pos_data.vector_val_pos);
+
         sleep_time = get_random_time();
         printf("Sleeping %d\n ms", sleep_time);
 
@@ -113,20 +123,27 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
             err_code = DESTSTATION_RECV_IPC_SOCKET_ERROR;
             goto error;
         }
+        printf("Result has been receieved from GateWay\n");
 
         if (strcmp(recv_vector_val_data.header, "vec"))
         {
+            printf("Received unknown result from GateWay. Exit with error\n");
             err_code = DESTSTATION_RECV_WRONG_DATA_FORMAT_ERROR;
             goto error;
         }
 
+        printf("Result: %d for vector index %d\n", recv_vector_val_data.vector_val, vector_ind);
+
         g_vector_res[vector_ind] = recv_vector_val_data.vector_val;
 
+        printf("Vector:\n");
         print_vector();
         printf("-------------\n");
 
         --g_vector_res_ind_size;
     }
+
+    printf("Processing of sequence of requests is finished. Send 'end' command to GateWay\n");
 
     send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
             .header = "pos",
@@ -141,8 +158,11 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
         err_code = DESTSTATION_SEND_IPC_SOCKET_ERROR;
         goto error;
     }
+    printf("Command 'end' has been successfully sent to GateWay\n");
 
     error:
+
+    printf("Finishing processing of 'DestStation'\n");
 
     return err_code;
 }
@@ -158,6 +178,7 @@ int main(int const argc, char const *argv[])
         err_code = DESTSTATION_CREATE_IPC_SOCKET_ERROR;
         goto error;
     }
+    printf("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
     
     if (-1 == deststation_socket_connect_socket(socket_fd_remote))
     {
@@ -165,13 +186,19 @@ int main(int const argc, char const *argv[])
     }
     else
     {
+        printf("Destination Station was successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
+
+        printf("Begin processing...\n");
         /* Begin process */
         err_code = begin_process(socket_fd_remote);
     }
 
     deststation_socket_close_socket(socket_fd_remote);
+    printf("Socket for remote connection with GateWay has just been closed. SOCKET_FD = %d\n", socket_fd_remote);
 
     error:
+
+    printf("Finishing 'DestStation'\n");
 
     return err_code;
 }
