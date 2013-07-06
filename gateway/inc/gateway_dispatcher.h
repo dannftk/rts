@@ -5,4 +5,4 @@
 
 void gateway_dispatcher_run_dispatcher(void);
 
-#endif
+#endif /* GATEWAY_DISPATCHER_H */

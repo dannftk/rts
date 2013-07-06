@@ -18,4 +18,4 @@ typedef enum gateway_error_code_e {
     GATEWAY_RECV_WRONG_FORMAT_DATA_ERROR
 } gateway_error_code_t;
 
-#endif
+#endif /* GATEWAY_COMMON_H */
