@@ -79,7 +79,7 @@ static int get_vector_index()
 static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_types_t vclient_type)
 {
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
-    send_client_type_data_t send_client_type_data = (send_client_type_data_t) {
+    send_client_type_data_t send_client_type_data = {
         .header = "typ",
         .vclient_type = vclient_type
     };
@@ -141,7 +141,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         while (g_vector_ind_size > 0)
         {
             int vector_index;
-            send_vector_data_t send_vector_data = (send_vector_data_t) {
+            send_vector_data_t send_vector_data = {
                 .header = "vec"
             };
 

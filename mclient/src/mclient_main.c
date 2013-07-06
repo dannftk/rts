@@ -87,7 +87,7 @@ static int get_col_mtrx_index(void)
 static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_types_t mclient_type)
 {
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
-    send_client_type_data_t send_client_type_data = (send_client_type_data_t) { 
+    send_client_type_data_t send_client_type_data = { 
         .header = "typ",
         .mclient_type = mclient_type
     };
@@ -152,7 +152,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         while (g_mtrx_col_ind_size > 0)
         {
             int col_mtrx_ind;
-            send_mtrx_data_t send_mtrx_data = (send_mtrx_data_t) {
+            send_mtrx_data_t send_mtrx_data = {
                 .header = "mtr"
             };
 

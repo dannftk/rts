@@ -3,10 +3,10 @@
 #ifndef VCLIENT_MAIN_H
 #define VCLIENT_MAIN_H
 
-#define MIN_SLEEP_TIME_MLS 1500
-#define MAX_SLEEP_TIME_MLS 1800
+#define MIN_SLEEP_TIME_MLS 100
+#define MAX_SLEEP_TIME_MLS 300
 
-#define VECTOR_SIZE 3
+#define VECTOR_SIZE 7
 
 /* do not change numbers of types of clients */
 typedef enum vclients_types_e {

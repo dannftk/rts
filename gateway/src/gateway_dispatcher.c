@@ -11,7 +11,7 @@
 #include "gateway_tasks.h"
 
 #define MICROSECONDS_IN_MILLISECONDS 1000
-#define DISPATCHER_SLEEP_MS 1000
+#define DISPATCHER_SLEEP_MS 500
 
 pthread_t disp_thread_id;
 FILE *disp_f;

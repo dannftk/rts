@@ -11,9 +11,6 @@
 #include "deststation_main.h"
 #include "deststation_socket.h"
 
-#define DESTSTATION_SLEEP_TIME_MS 5000
-#define MICROSECONDS_IN_MILLISECONDS 1000
-
 static int g_vector_res[VECTOR_SIZE];
 static int g_vector_res_ind[VECTOR_SIZE];
 static int g_vector_res_ind_size = VECTOR_SIZE;
@@ -26,11 +23,6 @@ static void print_vector(void)
         printf("%d ", g_vector_res[pos]);
     }
     printf("\n");
-}
-
-static int get_random_time(void)
-{
-    return MIN_SLEEP_TIME_MLS + rand() % (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
 }
 
 static int get_random_vector_index(void)
@@ -50,10 +42,10 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
 {
     int ind;
     deststation_error_code_t err_code = DESTSTATION_SUCCESS;
-    send_vector_val_pos_data_to_gateway_t send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
+    send_vector_val_pos_data_to_gateway_t send_vector_val_pos_data = {
             .header = "pos"
     };
-    send_client_type_data_to_gateway_t send_client_type_data = (send_client_type_data_to_gateway_t) {
+    send_client_type_data_to_gateway_t send_client_type_data = {
         .header = "typ",
         .client_type = CLIENT_TYPE_DESTSTATION
     };

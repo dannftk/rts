@@ -14,12 +14,18 @@ pthread_mutex_t queue_mutex;
 
 void gateway_scheduler_init_sync(void)
 {
-    pthread_mutex_init(&queue_mutex, NULL);
+    if (pthread_mutex_init(&queue_mutex, NULL))
+    {
+        GATEWAY_COMMON_ASSERT(0);
+    }
 }
 
 void gateway_scheduler_deinit_sync(void)
 {
-    pthread_mutex_destroy(&queue_mutex);
+    if (pthread_mutex_destroy(&queue_mutex))
+    {
+        GATEWAY_COMMON_ASSERT(0);
+    }
 }
 
 void gateway_scheduler_add_task_to_queue(task_data_t task_data)

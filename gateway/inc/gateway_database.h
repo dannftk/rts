@@ -3,8 +3,8 @@
 #ifndef GATEWAY_DATABASE_H
 #define GATEWAY_DATABASE_H
 
-#define ROWS 3
-#define COLUMNS 3
-#define VECTOR_SIZE 3
+#define ROWS 7
+#define COLUMNS 7
+#define VECTOR_SIZE 7
 
 #endif /* GATEWAY_DATABASE_H */
