@@ -39,8 +39,6 @@ static enum gateway_error_code_e begin_process(void)
     }
     printf("Command 'Start' was successfully sent\n");
 
-    FD_ZERO(&g_read_client_sockets_fds);
-    
     printf("Activate registered clients\n");
     gateway_clients_activate_registered_clients();
     if (-1 == g_socket_client_fd_max)
@@ -65,14 +63,14 @@ static enum gateway_error_code_e begin_process(void)
                  client_type < GATEWAY_CLIENT_TYPES_COUNT;
                  client_type = GATEWAY_CLIENTS_TYPES_NEXT(client_type))
             {
-                if (FD_ISSET(g_gateway_clients[client_type].socket_fd, &g_read_client_sockets_fds))
+                if (g_gateway_clients[client_type].active_flag &&
+                    FD_ISSET(g_gateway_clients[client_type].socket_fd, &g_read_client_sockets_fds))
                 {
                     printf("Client type %d sent message. Proceed handle message\n", client_type);
                     g_gateway_clients[client_type].run_handler();
                 }
             }
-            gateway_clients_deactivate_registered_clients();
-            gateway_clients_activate_registered_clients();
+            gateway_clients_reload_fd_set();
         }
     }
 

@@ -358,11 +358,34 @@ void gateway_clients_activate_registered_clients(void)
 {
     gateway_client_types_t client_type;
 
+    FD_ZERO(&g_read_client_sockets_fds);
     g_socket_client_fd_max = -1;
     for (client_type = GATEWAY_CLIENT_TYPE_MCLIENT_A;
          client_type < GATEWAY_CLIENT_TYPES_COUNT;
          client_type = GATEWAY_CLIENTS_TYPES_NEXT(client_type))
     {
         gateway_clients_activate_registered_client(client_type);
+    }
+}
+
+void gateway_clients_reload_fd_set(void)
+{
+    gateway_client_types_t client_type;
+
+    FD_ZERO(&g_read_client_sockets_fds);
+    
+    g_socket_client_fd_max = -1;
+    for (client_type = GATEWAY_CLIENT_TYPE_MCLIENT_A;
+         client_type < GATEWAY_CLIENT_TYPES_COUNT;
+         client_type = GATEWAY_CLIENTS_TYPES_NEXT(client_type))
+    {
+        if (g_gateway_clients[client_type].active_flag)
+        {
+            FD_SET(g_gateway_clients[client_type].socket_fd, &g_read_client_sockets_fds);
+            if (g_gateway_clients[client_type].socket_fd > g_socket_client_fd_max)
+            {
+                g_socket_client_fd_max = g_gateway_clients[client_type].socket_fd;
+            }
+        }
     }
 }

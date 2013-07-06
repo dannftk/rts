@@ -85,5 +85,6 @@ void gateway_clients_register_client(int socket_fd_remote,
 void gateway_clients_remove_registered_clients(void);
 void gateway_clients_deactivate_registered_clients(void);
 void gateway_clients_activate_registered_clients(void);
+void gateway_clients_reload_fd_set(void);
 
 #endif /* GATEWAY_CLIENTS_H */
