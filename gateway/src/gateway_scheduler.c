@@ -30,7 +30,7 @@ void gateway_scheduler_deinit_sync(void)
 
 void gateway_scheduler_add_task_to_queue(task_data_t task_data)
 {
-    /* Protected */
+    /* Protected operation */
     pthread_mutex_lock(&queue_mutex);
 
         g_task_queue[g_tail_queue_ind].task_data = task_data;
@@ -51,7 +51,7 @@ int gateway_scheduler_get_ptask_from_queue(task_data_t *p_task_data)
 {
     int result = 1;
 
-    /* Protected */
+    /* Protected operation */
     pthread_mutex_lock(&queue_mutex);
 
         if (g_head_queue_ind != g_tail_queue_ind)

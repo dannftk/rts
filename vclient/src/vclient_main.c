@@ -103,7 +103,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
 
         printf("Wait new commands from GateWay...\n");
         fflush(stdout);
-        /* Recieve command from GateWay */
+        /* Receive command from GateWay */
         if (-1 == vclient_socket_receive(socket_fd_remote,
                                          header_info_vector_data_request,
                                          sizeof(header_info_vector_data_request)))
@@ -129,7 +129,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
         }
 
         printf("*****************\n");
-        printf("Recieved command 'vec' with request of vector\n");
+        printf("Received command 'vec' with request of vector\n");
 
         for (ind = 0; ind < VECTOR_SIZE; ind++)
         {

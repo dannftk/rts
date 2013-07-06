@@ -144,14 +144,14 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
         --g_vector_res_ind_size;
     }
 
+    error_real_time:
+
     printf("Processing of sequence of requests is finished. Send 'end' command to GateWay\n");
 
     send_vector_val_pos_data = (send_vector_val_pos_data_to_gateway_t) {
             .header = "end",
             .vector_val_pos = -1
     };
-
-    error_real_time:
 
     /* Send 'end' command to GateWay */
     if (-1 == deststation_socket_send(socket_fd_remote,

@@ -112,7 +112,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
 
         printf("Wait new commands from GateWay...\n");
         fflush(stdout);
-        /* Recieve command from GateWay */
+        /* Receive command from GateWay */
         if (-1 == mclient_socket_receive(socket_fd_remote,
                                          &recv_mtrx_row_request,
                                          sizeof(recv_mtrx_row_request)))
@@ -125,7 +125,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         if (!strcmp(recv_mtrx_row_request.header, "end") &&
             -1 == recv_mtrx_row_request.row)
         {
-            printf("Recieved command 'end' from GateWay. Finish processing and close remote connection\n");
+            printf("Received command 'end' from GateWay. Finish processing and close remote connection\n");
             break;
         }
         else
@@ -140,7 +140,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
         }
 
         printf("*****************\n");
-        printf("Recieved command 'mtr' with request number of row %d\n", recv_mtrx_row_request.row);
+        printf("Received command 'mtr' with request number of row %d\n", recv_mtrx_row_request.row);
 
         for (ind = 0; ind < COLUMNS; ind++)
         {
