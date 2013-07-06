@@ -74,9 +74,9 @@ static enum gateway_error_code_e begin_process(void)
         }
     }
 
-    gateway_scheduler_deinit_sync();
-
     error:
+
+    gateway_scheduler_deinit_sync();
 
     return err_code;
 }
