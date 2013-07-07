@@ -87,6 +87,7 @@ int main(int const argc, char const *argv[])
     gateway_error_code_t err_code = GATEWAY_SUCCESS;
     unsigned int client_reg_num;
 
+    printf("Try to create local server socket for listening new external connections...\n");
     /* Create server-gateway socket */
     socket_fd_local = gateway_socket_create_socket();
     if (-1 == socket_fd_local)
@@ -97,6 +98,7 @@ int main(int const argc, char const *argv[])
     printf("Local socket for external client connections has been successfully created. "
            "SOCKET_FD = %d\n", socket_fd_local);
 
+    printf("Try to bind local server socket...\n");
     /* Bind server-gateway socket */
     if (-1 == gateway_socket_bind_socket(socket_fd_local))
     {
@@ -157,7 +159,7 @@ int main(int const argc, char const *argv[])
 
     error_client:
 
-    printf("Remove all registered clients from GateWay system\n");
+    printf("Remove all registered clients from GateWay system...\n");
 
     /* Remove all registered earlier clients and close their sockets */
     gateway_clients_remove_registered_clients();
@@ -165,6 +167,8 @@ int main(int const argc, char const *argv[])
     printf("All clients have been successfully removed from system 'GateWay'\n");
 
     error:
+
+    printf("Close local server socket... SOCKET_FD = %d\n", socket_fd_local);
 
     /* Close server-gateway socket */
     gateway_socket_close_socket(socket_fd_local);

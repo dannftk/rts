@@ -175,6 +175,7 @@ int main(int const argc, char const *argv[])
     deststation_error_code_t err_code = DESTSTATION_SUCCESS;
     int socket_fd_remote;
 
+    printf("Try to create remote socket for connection with RTS GateWay...\n");
     socket_fd_remote = deststation_socket_create_socket();
     if (-1 == socket_fd_remote)
     {
@@ -183,6 +184,7 @@ int main(int const argc, char const *argv[])
     }
     printf("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
     
+    printf("Try to connect to remote RTS GateWay...\n");
     if (-1 == deststation_socket_connect_socket(socket_fd_remote))
     {
         err_code = DESTSTATION_CONNECT_IPC_SOCKET_ERROR;

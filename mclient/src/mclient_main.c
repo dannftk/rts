@@ -205,7 +205,6 @@ int main(int const argc, char const *argv[])
     {
         printf("argv[%d] = %s\n", i, argv[i]);
     }
-    printf("\n");
 
     if (3 != argc)
     {
@@ -217,12 +216,17 @@ int main(int const argc, char const *argv[])
     MCLIENT_COMMON_MEM_ALLOC(mtrx_fp, (mtrx_fp_len + 1) * sizeof(char));
     strcpy(mtrx_fp, argv[1]);
 
+    printf("Try reading matrix from the file path '%s'...\n", mtrx_fp);
     err_code = read_mtrx_from_file(mtrx_fp);
     MCLIENT_COMMON_DEALLOC_MEM(mtrx_fp);
     if (MCLIENT_SUCCESS == err_code)
     {
         int socket_fd_remote;
 
+        printf("The next matrix has been read:\n");
+        print_mtrx();
+
+        printf("Try to create remote socket for connection with RTS GateWay...\n");
         socket_fd_remote = mclient_socket_create_socket();
         if (-1 == socket_fd_remote)
         {
@@ -231,12 +235,13 @@ int main(int const argc, char const *argv[])
         }
         printf("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
         
+        printf("Try to connect to remote RTS GateWay...\n");
         if (-1 == mclient_socket_connect_socket(socket_fd_remote))
         {
             err_code = MCLIENT_CONNECT_IPC_SOCKET_ERROR;
             goto error;
         }
-        printf("MClient was successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
+        printf("MClient has been successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
 
         printf("Begin processing...\n");
         err_code = begin_process(socket_fd_remote, (mclients_types_t)atoi(argv[2]));

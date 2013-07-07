@@ -194,7 +194,6 @@ int main(int const argc, char const *argv[])
     {
         printf("argv[%d] = %s\n", i, argv[i]);
     }
-    printf("\n");
 
     if (3 != argc)
     {
@@ -206,12 +205,17 @@ int main(int const argc, char const *argv[])
     VCLIENT_COMMON_MEM_ALLOC(vector_fp, (vector_fp_len + 1) * sizeof(char));
     strcpy(vector_fp, argv[1]);
 
+    printf("Try reading vector from the file path '%s'...\n", vector_fp);
     err_code = read_vector_from_file(vector_fp);
     VCLIENT_COMMON_DEALLOC_MEM(vector_fp);
     if (VCLIENT_SUCCESS == err_code)
     {
         int socket_fd_remote;
 
+        printf("The next vector has been read:\n");
+        print_vector();
+
+        printf("Try to create remote socket for connection with RTS GateWay...\n");
         socket_fd_remote = vclient_socket_create_socket();
         if (-1 == socket_fd_remote)
         {
@@ -220,12 +224,13 @@ int main(int const argc, char const *argv[])
         }
         printf("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
         
+        printf("Try to connect to remote RTS GateWay...\n");
         if (-1 == vclient_socket_connect_socket(socket_fd_remote))
         {
             err_code = VCLIENT_CONNECT_IPC_SOCKET_ERROR;
             goto error;
         }
-        printf("VClient was successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
+        printf("VClient has been successfully connected to remote GateWay server. SOCKET_FD = %d\n", socket_fd_remote);
 
         printf("Begin processing...\n");
         err_code = begin_process(socket_fd_remote, (vclients_types_t)atoi(argv[2]));
