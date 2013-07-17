@@ -26,9 +26,9 @@ static enum gateway_error_code_e begin_process(void)
     /* Initialize mutex for system */ 
     gateway_scheduler_init_sync();
 
-    printf ("Send command 'Start' to 'DestStation' for triggering process. "
-            "Sending data: HEAD = %s\n",
-            header_to_start_deststation);
+    printf("Send command 'Start' to 'DestStation' for triggering process. "
+           "Sending data: HEAD = %s\n",
+           header_to_start_deststation);
     /* Send 'start' command to deststation */
     if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_DESTSTATION].socket_fd,
                                   header_to_start_deststation,
