@@ -25,7 +25,6 @@ MCLIENT_OBJS := $(patsubst %.c, $(MCLIENT_OBJ_DIR)/%.o, $(MCLIENT_SRCS_NOTDIR))
 MCLIENT_DEPS := $(patsubst %.c, $(MCLIENT_DEP_DIR)/%.d, $(MCLIENT_SRCS_NOTDIR))
 
 $(MCLIENT_OBJ_DIR)/%.o: $(MCLIENT_SRC_DIR)/%.c
-	$(CC) -c $< $(FLAGS) $(MCLIENT_INCLUDES) -MMD -o $@
-	@$(MV) $(patsubst %.o, %.d, $@) $(MCLIENT_DEP_DIR)
+	$(CC) -c $< $(FLAGS) $(MCLIENT_INCLUDES) -MMD -MF $(MCLIENT_DEP_DIR)/$(notdir $(patsubst %.o, %.d, $@)) -o $@
 
 -include $(MCLIENT_DEPS)

@@ -25,7 +25,6 @@ GATEWAY_OBJS := $(patsubst %.c, $(GATEWAY_OBJ_DIR)/%.o, $(GATEWAY_SRCS_NOTDIR))
 GATEWAY_DEPS := $(patsubst %.c, $(GATEWAY_DEP_DIR)/%.d, $(GATEWAY_SRCS_NOTDIR))
 
 $(GATEWAY_OBJ_DIR)/%.o: $(GATEWAY_SRC_DIR)/%.c
-	$(CC) -c $< $(FLAGS) $(GATEWAY_INCLUDES) -MMD -o $@
-	@$(MV) $(patsubst %.o, %.d, $@) $(GATEWAY_DEP_DIR)
+	$(CC) -c $< $(FLAGS) $(GATEWAY_INCLUDES) -MMD -MF $(GATEWAY_DEP_DIR)/$(notdir $(patsubst %.o, %.d, $@)) -o $@
 
 -include $(GATEWAY_DEPS)

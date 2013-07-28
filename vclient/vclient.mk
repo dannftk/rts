@@ -25,7 +25,6 @@ VCLIENT_OBJS := $(patsubst %.c, $(VCLIENT_OBJ_DIR)/%.o, $(VCLIENT_SRCS_NOTDIR))
 VCLIENT_DEPS := $(patsubst %.c, $(VCLIENT_DEP_DIR)/%.d, $(VCLIENT_SRCS_NOTDIR))
 
 $(VCLIENT_OBJ_DIR)/%.o: $(VCLIENT_SRC_DIR)/%.c
-	$(CC) -c $< $(FLAGS) $(VCLIENT_INCLUDES) -MMD -o $@
-	@$(MV) $(patsubst %.o, %.d, $@) $(VCLIENT_DEP_DIR)
+	$(CC) -c $< $(FLAGS) $(VCLIENT_INCLUDES) -MMD -MF $(VCLIENT_DEP_DIR)/$(notdir $(patsubst %.o, %.d, $@)) -o $@
 
 -include $(VCLIENT_DEPS)

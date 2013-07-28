@@ -25,7 +25,6 @@ DESTSTATION_OBJS := $(patsubst %.c, $(DESTSTATION_OBJ_DIR)/%.o, $(DESTSTATION_SR
 DESTSTATION_DEPS := $(patsubst %.c, $(DESTSTATION_DEP_DIR)/%.d, $(DESTSTATION_SRCS_NOTDIR))
 
 $(DESTSTATION_OBJ_DIR)/%.o: $(DESTSTATION_SRC_DIR)/%.c
-	$(CC) -c $< $(FLAGS) $(DESTSTATION_INCLUDES) -MMD -o $@
-	@$(MV) $(patsubst %.o, %.d, $@) $(DESTSTATION_DEP_DIR)
+	$(CC) -c $< $(FLAGS) $(DESTSTATION_INCLUDES) -MMD -MF $(DESTSTATION_DEP_DIR)/$(notdir $(patsubst %.o, %.d, $@)) -o $@
 
 -include $(DESTSTATION_DEPS)
