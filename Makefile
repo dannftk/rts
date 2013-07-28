@@ -7,7 +7,6 @@ DESTSTATION_DIR := deststation
 BIN_DIR := bin
 
 RM := rm -rf
-MV := mv
 
 CC := gcc
 FLAGS := -O2 -Wall
