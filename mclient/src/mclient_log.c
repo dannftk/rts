@@ -31,7 +31,7 @@ enum mclient_error_code_e mclient_log_init_log(void)
         project_root_path = getenv("RTS_PROJ_ROOT");
         if (NULL == project_root_path)
         {
-            err_code = MCLIENT_LOGINIT_RTS_ROOT_PROJ_ENV_VAR_NOT_SET_ERROR;
+            err_code = MCLIENT_LOGINIT_RTS_PROJ_ROOT_ENV_VAR_NOT_SET_ERROR;
             goto error;
         }
 
