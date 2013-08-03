@@ -16,11 +16,16 @@
 #include "vclient_main.h"
 #include "vclient_socket.h"
 
+#define PROJECT_ROOT_PATH_ENV_VARIABLE "RTS_PROJ_ROOT"
+#define VCLIENT_LOG_FILE_PATH "log/vclient.log"
 #define MICROSECONDS_IN_MILLISECONDS 1000
+#define LOGING_VCLIENT_LOG_FILE 1
 
 static int g_vector[VECTOR_SIZE];
 static int g_vector_index[VECTOR_SIZE];
 static int g_vector_ind_size;
+
+FILE *vector_log_f;
 
 static void print_vector(void)
 {
@@ -68,7 +73,7 @@ static void init_random(void)
     srand(time(0));
 }
 
-static int get_vector_index()
+static int get_vector_index(void)
 {
     int index_of_vector_index = rand() % g_vector_ind_size;
     int vector_index = g_vector_index[index_of_vector_index];
@@ -180,16 +185,67 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
     return err_code;
 }
 
+static void log_deinit(void)
+{
+    if (LOGING_VCLIENT_LOG_FILE && NULL != vector_log_f)
+    {
+        fclose(vector_log_f);
+        vector_log_f = NULL;
+    }
+}
+
+static enum vclient_error_code_e log_init(void)
+{
+    vclient_error_code_t err_code = VCLIENT_SUCCESS;
+
+    if (LOGING_VCLIENT_LOG_FILE)
+    {
+        char *project_root_path;
+        char log_file_path[100];
+
+        project_root_path = getenv("RTS_PROJ_ROOT");
+        if (NULL == project_root_path)
+        {
+            err_code = VCLIENT_LOGINIT_EMPTY_RTS_ROOT_PROJ_NOT_SET_ERROR;
+            goto error;
+        }
+
+        strcpy(log_file_path, project_root_path);
+        strcat(log_file_path, "/");
+        strcat(log_file_path, VCLIENT_LOG_FILE_PATH);
+
+        vector_log_f = fopen(log_file_path, "w");
+        if (NULL == vector_log_f)
+        {
+            err_code = VCLIENT_LOGINIT_OPEN_LOG_FILE_ERROR;
+            goto error;
+        }
+    }
+    else
+    {
+        vector_log_f = stdout;
+    }
+
+    error:
+
+    return err_code;
+}
+
 int main(int const argc, char const *argv[])
 {
     char *vector_fp = NULL;
     size_t vector_fp_len;
-
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
+    int i;
+
+    err_code = log_init();
+    if (VCLIENT_SUCCESS != err_code)
+    {
+        goto error;
+    }
 
     printf("VClient parameters:\n");
 
-    int i;
     for (i = 0; i < argc; i++)
     {
         printf("argv[%d] = %s\n", i, argv[i]);
@@ -242,6 +298,8 @@ int main(int const argc, char const *argv[])
     error:
 
     printf("Finishing 'VClient'\n");
+
+    log_deinit();
 
     return err_code;
 }
