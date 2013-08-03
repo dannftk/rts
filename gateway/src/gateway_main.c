@@ -91,7 +91,7 @@ int main(int const argc, char const *argv[])
     err_code = gateway_log_init_log();
     if (GATEWAY_SUCCESS != err_code)
     {
-        goto error;
+        goto error_log;
     }
 
     GATEWAY_LOG_LOG("Try to create local server socket for listening new external connections...\n");
@@ -178,9 +178,9 @@ int main(int const argc, char const *argv[])
     gateway_socket_close_socket(socket_fd_local);
     GATEWAY_LOG_LOG("Local socket has just been closed\n");
 
-    error:
-
     GATEWAY_LOG_LOG("Finish working system 'GateWay'\n");
+
+    error_log:
     
     gateway_log_deinit_log();
 

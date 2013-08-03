@@ -202,7 +202,7 @@ int main(int const argc, char const *argv[])
     err_code = mclient_log_init_log();
     if (MCLIENT_SUCCESS != err_code)
     {
-        goto error;
+        goto error_log;
     }
 
     MCLIENT_LOG_LOG("MClient parameters:\n");
@@ -259,6 +259,8 @@ int main(int const argc, char const *argv[])
     error:
 
     MCLIENT_LOG_LOG("Finishing 'MClient'\n");
+
+    error_log:
 
     mclient_log_deinit_log();
 

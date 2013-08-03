@@ -179,7 +179,7 @@ int main(int const argc, char const *argv[])
     err_code = deststation_log_init_log();
     if (DESTSTATION_SUCCESS != err_code)
     {
-        goto error;
+        goto error_log;
     }
 
     DESTSTATION_LOG_LOG("Try to create remote socket for connection with RTS GateWay...\n");
@@ -211,6 +211,8 @@ int main(int const argc, char const *argv[])
     error:
 
     DESTSTATION_LOG_LOG("Finishing 'DestStation'\n");
+
+    error_log:
 
     deststation_log_deinit_log();
 

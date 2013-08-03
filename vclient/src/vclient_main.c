@@ -191,7 +191,7 @@ int main(int const argc, char const *argv[])
     err_code = vclient_log_init_log();
     if (VCLIENT_SUCCESS != err_code)
     {
-        goto error;
+        goto error_log;
     }
 
     VCLIENT_LOG_LOG("VClient parameters:\n");
@@ -248,6 +248,8 @@ int main(int const argc, char const *argv[])
     error:
 
     VCLIENT_LOG_LOG("Finishing 'VClient'\n");
+
+    error_log:
 
     vclient_log_deinit_log();
 
