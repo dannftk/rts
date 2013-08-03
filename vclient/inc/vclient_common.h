@@ -5,9 +5,12 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef enum vclient_error_code_e {
     VCLIENT_SUCCESS = 0,
+    VCLIENT_LOGINIT_RTS_PROJ_ROOT_ENV_VAR_NOT_SET_ERROR,
+    VCLIENT_LOGINIT_OPEN_LOG_FILE_ERROR,
     VCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR,
     VCLIENT_CANT_OPEN_VECTOR_FILE_ERROR,
     VCLIENT_CREATE_IPC_SOCKET_ERROR,
@@ -34,7 +37,7 @@ typedef enum vclient_error_code_e {
         {                                                       \
             VCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
+    } while (0)
 
 #define VCLIENT_COMMON_DEALLOC_MEM(pointer)                     \
     do {                                                        \
@@ -47,7 +50,6 @@ typedef enum vclient_error_code_e {
         {                                                       \
             VCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
-
+    } while (0)
 
 #endif /* VCLIENT_COMMON_H */

@@ -8,6 +8,8 @@
 
 typedef enum mclient_error_code_e {
     MCLIENT_SUCCESS = 0,
+    MCLIENT_LOGINIT_RTS_PROJ_ROOT_ENV_VAR_NOT_SET_ERROR,
+    MCLIENT_LOGINIT_OPEN_LOG_FILE_ERROR,
     MCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR,
     MCLIENT_CANT_OPEN_MATRIX_FILE_ERROR,
     MCLIENT_CREATE_IPC_SOCKET_ERROR,
@@ -34,7 +36,7 @@ typedef enum mclient_error_code_e {
         {                                                       \
             MCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
+    } while (0)
 
 #define MCLIENT_COMMON_DEALLOC_MEM(pointer)                     \
     do {                                                        \
@@ -47,7 +49,7 @@ typedef enum mclient_error_code_e {
         {                                                       \
             MCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
+    } while (0)
 
 
 #endif /* MCLIENT_COMMON_H */

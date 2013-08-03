@@ -3,3 +3,8 @@ bin/*
 *.o
 *.d
 *.log
+
+rts.sublime-project
+rts.sublime-workspace
+.vimrc
+.DS_Store
