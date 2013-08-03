@@ -229,7 +229,7 @@ int main(int const argc, char const *argv[])
             goto error;
         }
         VCLIENT_LOG_LOG("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
-        
+
         VCLIENT_LOG_LOG("Try to connect to remote RTS GateWay...\n");
         if (-1 == vclient_socket_connect_socket(socket_fd_remote))
         {

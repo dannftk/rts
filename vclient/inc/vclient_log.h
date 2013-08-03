@@ -3,6 +3,8 @@
 #ifndef VCLIENT_LOG_H_
 #define VCLIENT_LOG_H_
 
+#include <stdio.h>
+
 extern FILE *vclient_log_f;
 
 #define VCLIENT_LOG_LOG(fmt, ...) fprintf(vclient_log_f, fmt, ##__VA_ARGS__)
