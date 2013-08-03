@@ -36,7 +36,7 @@ typedef enum mclient_error_code_e {
         {                                                       \
             MCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
+    } while (0)
 
 #define MCLIENT_COMMON_DEALLOC_MEM(pointer)                     \
     do {                                                        \
@@ -49,7 +49,7 @@ typedef enum mclient_error_code_e {
         {                                                       \
             MCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
+    } while (0)
 
 
 #endif /* MCLIENT_COMMON_H */
