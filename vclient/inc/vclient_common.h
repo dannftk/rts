@@ -5,6 +5,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef enum vclient_error_code_e {
     VCLIENT_SUCCESS = 0,
@@ -36,7 +37,7 @@ typedef enum vclient_error_code_e {
         {                                                       \
             VCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
+    } while (0)
 
 #define VCLIENT_COMMON_DEALLOC_MEM(pointer)                     \
     do {                                                        \
@@ -49,7 +50,6 @@ typedef enum vclient_error_code_e {
         {                                                       \
             VCLIENT_COMMON_ASSERT(0);                           \
         }                                                       \
-    } while(0)
-
+    } while (0)
 
 #endif /* VCLIENT_COMMON_H */
