@@ -1,5 +1,5 @@
 1) Go to the root of the project (I mean 'rts directory')
-2) Execute 'configure' script to create new directories in the rts and other applications' directories
+2) Execute 'configure' script (./configure) to create new directories in the rts and other applications' directories
 3) Make the project 'make all'. If there are some problems contact me
 4) Ok, now you have just built an amazing project called RTS (Real Time System I presume it means :))
     Go to the 'bin' directory. There are going to be several applications waiting for being run
@@ -7,7 +7,7 @@
         * gateway (it is resposible for main and concurent operations-calculations)
         * deststation (do not confuse with destination, it is another word :) Actually, I personally used to confuse them :)
             this applications is requesting values of the ending vector from gateway
-            and getting results from it on finising)
+            and getting results from it on finishing)
         * mclient (provides values of a matrix)
         * vlcient (provides values of a vector)
 5) Run the applications as background processes (you could leave the last one as a foreground, as you want).
