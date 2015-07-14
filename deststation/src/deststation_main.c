@@ -92,7 +92,7 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
     {
         int vector_ind;
         recv_vector_val_data_from_gateway_t recv_vector_val_data;
-        
+
         vector_ind = get_random_vector_index();
         send_vector_val_pos_data.vector_val_pos = vector_ind;
 
@@ -116,7 +116,7 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
         DESTSTATION_LOG_LOG("Try get result from GateWay RTS...\n");
         fflush(stdout);
         /* Get result of request */
-        if (-1 == deststation_socket_receive(socket_fd_remote, 
+        if (-1 == deststation_socket_receive(socket_fd_remote,
                                              &recv_vector_val_data,
                                              sizeof(recv_vector_val_data),
                                              MSG_DONTWAIT))
@@ -190,7 +190,7 @@ int main(int const argc, char const *argv[])
         goto error;
     }
     DESTSTATION_LOG_LOG("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
-    
+
     DESTSTATION_LOG_LOG("Try to connect to remote RTS GateWay...\n");
     if (-1 == deststation_socket_connect_socket(socket_fd_remote))
     {
