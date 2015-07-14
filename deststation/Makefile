@@ -1,17 +1,14 @@
 # encoding: UTF-8
 # shell is 'bash' or 'sh'
-
 CCOMP ?= gcc
 CCOMP_FLAGS ?= -std=c11 -O2 -Wall
 RM ?= rm -rf
 
 # directories
-ifndef BIN_DIR
-$(error BIN_DIR is not set. Please source env-setup.sh in the root of RTS project)
-endif
 OBJ_DIR := .obj
 DEP_DIR := .dep
 SRC_DIR := src
+BIN_DIR := bin
 
 # bin path and name
 BIN_NAME := deststation

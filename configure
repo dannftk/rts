@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir -p bin log
+
+VCLIENT_DIR=vclient
+MCLIENT_DIR=mclient
+GATEWAY_DIR=gateway
+DESTSTATION_DIR=deststation
+
+cd $VCLIENT_DIR && ./configure && cd -
+cd $MCLIENT_DIR && ./configure && cd -
+cd $GATEWAY_DIR && ./configure && cd -
+cd $DESTSTATION_DIR && ./configure && cd -

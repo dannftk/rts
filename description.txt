@@ -1,7 +1,5 @@
 1) Go to the root of the project (I mean 'rts directory')
-2) Source the file env-setup.sh (bash command is 'source env-setup.sh' or '. env-setup.sh')
-    It will inject the variable RTS_PROJ_ROOT which is going to be used
-    by the applications and Makefiles. It is essential!
+2) Execute 'configure' script to create new directories in the rts and other applications' directories
 3) Make the project 'make all'. If there are some problems contact me
 4) Ok, now you have just built an amazing project called RTS (Real Time System I presume it means :))
     Go to the 'bin' directory. There are going to be several applications waiting for being run
