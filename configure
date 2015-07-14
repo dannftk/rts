@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p bin log
+mkdir -p bin
 
 VCLIENT_DIR=vclient
 MCLIENT_DIR=mclient

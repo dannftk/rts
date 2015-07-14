@@ -23,7 +23,7 @@
     Do not confuse the parameters and their order! :)
     It was a fast-hand applications, sorry, I couldn't have been on time to make it perfect :)
 
-    Logging is on and stewed inside the 'log' directory
+    Logging is on and stewed inside the 'bin' directory and produced by each application being on
     Actually there is one log more being written to the same directory where binaries are located
     This log is written by 'dispatcher' of the gateway.
     It is one more thread I launch for dispatchering of the gateway's tasks
