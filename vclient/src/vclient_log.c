@@ -6,7 +6,7 @@
 #include "vclient_log.h"
 
 #define LOGING_VCLIENT_LOG_FILE 1
-#define VCLIENT_LOG_FILE_PATH "vclient.log"
+#define VCLIENT_LOG_FILE_PATH "_vclient.log"
 
 FILE *vclient_log_f;
 
@@ -19,13 +19,15 @@ void vclient_log_deinit_log(void)
     }
 }
 
-enum vclient_error_code_e vclient_log_init_log(void)
+enum vclient_error_code_e vclient_log_init_log(char const *prefix)
 {
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
 
     if (LOGING_VCLIENT_LOG_FILE)
     {
-        vclient_log_f = fopen(VCLIENT_LOG_FILE_PATH, "w");
+        char file_log_name[100];
+        strcpy(file_log_name, prefix);
+        vclient_log_f = fopen(strcat(file_log_name, VCLIENT_LOG_FILE_PATH), "w");
         if (NULL == vclient_log_f)
         {
             err_code = VCLIENT_LOGINIT_OPEN_LOG_FILE_ERROR;

@@ -4,6 +4,7 @@
 
 #include <unistd.h>
 
+#include <libgen.h>
 #include <stdio.h>
 #include <stddef.h>
 
@@ -88,7 +89,7 @@ static int get_col_mtrx_index(void)
 static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_types_t mclient_type)
 {
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
-    send_client_type_data_t send_client_type_data = { 
+    send_client_type_data_t send_client_type_data = {
         .header = "typ",
         .mclient_type = mclient_type
     };
@@ -199,7 +200,12 @@ int main(int const argc, char const *argv[])
     mclient_error_code_t err_code = MCLIENT_SUCCESS;
     int i;
 
-    err_code = mclient_log_init_log();
+    if (4 != argc)
+    {
+        return MCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR;
+    }
+
+    err_code = mclient_log_init_log(basename((char *)argv[3]));
     if (MCLIENT_SUCCESS != err_code)
     {
         goto error_log;
@@ -210,12 +216,6 @@ int main(int const argc, char const *argv[])
     for (i = 0; i < argc; i++)
     {
         MCLIENT_LOG_LOG("argv[%d] = %s\n", i, argv[i]);
-    }
-
-    if (3 != argc)
-    {
-        err_code = MCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR;
-        goto error;
     }
 
     mtrx_fp_len = strlen(argv[1]);
@@ -240,7 +240,7 @@ int main(int const argc, char const *argv[])
             goto error;
         }
         MCLIENT_LOG_LOG("Socket for connection with GateWay has been created. SOCKET_FD = %d\n", socket_fd_remote);
-        
+
         MCLIENT_LOG_LOG("Try to connect to remote RTS GateWay...\n");
         if (-1 == mclient_socket_connect_socket(socket_fd_remote))
         {

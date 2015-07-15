@@ -4,6 +4,7 @@
 
 #include <unistd.h>
 
+#include <libgen.h>
 #include <stdio.h>
 #include <stddef.h>
 
@@ -188,7 +189,12 @@ int main(int const argc, char const *argv[])
     vclient_error_code_t err_code = VCLIENT_SUCCESS;
     int i;
 
-    err_code = vclient_log_init_log();
+    if (4 != argc)
+    {
+        return VCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR;
+    }
+
+    err_code = vclient_log_init_log(basename((char *)argv[3]));
     if (VCLIENT_SUCCESS != err_code)
     {
         goto error_log;
@@ -199,12 +205,6 @@ int main(int const argc, char const *argv[])
     for (i = 0; i < argc; i++)
     {
         VCLIENT_LOG_LOG("argv[%d] = %s\n", i, argv[i]);
-    }
-
-    if (3 != argc)
-    {
-        err_code = VCLIENT_WRONG_NUMBER_CLI_PARAMS_ERROR;
-        goto error;
     }
 
     vector_fp_len = strlen(argv[1]);
