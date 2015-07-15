@@ -11,3 +11,5 @@ cd $VCLIENT_DIR && ./configure && cd -
 cd $MCLIENT_DIR && ./configure && cd -
 cd $GATEWAY_DIR && ./configure && cd -
 cd $DESTSTATION_DIR && ./configure && cd -
+
+printf "\e[1;32mRTS successfully configured\e[0m\n"
