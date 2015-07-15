@@ -11,7 +11,7 @@
         * mclient (provides values of a matrix)
         * vlcient (provides values of a vector)
 5) Run the applications as background processes (you could leave the last one as a foreground, as you want).
-    Gateway process is supposed be run the first:
+    Gateway process is supposed to be run the first:
 
         bash> ./gateway &
         bash> ./destation &
@@ -23,7 +23,7 @@
     Do not confuse the parameters and their order! :)
     It was a fast-hand applications, sorry, I couldn't have been on time to make it perfect :)
 
-    Logging is on and stewed inside the 'bin' directory and produced by each application being on
+    Logging is on and stowed inside the 'bin' directory and produced by each application being on
     Actually there is one log more being written to the same directory where binaries are located
     This log is written by 'dispatcher' of the gateway.
     It is one more thread I launch for dispatchering of the gateway's tasks
