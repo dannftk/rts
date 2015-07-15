@@ -15,10 +15,10 @@
 
         bash> ./gateway &
         bash> ./destation &
-        bash> ./mclient ../files/matrix_A.txt 0 &
-        bash> ./mclient ../files/matrix_C.txt 1 &
-        bash> ./vclient ../files/vector_b.txt 2 &
-        bash> ./vclient ../files_vector_d.txt 3 &
+        bash> ./mclient ../files/matrix_A.txt 0 mtrx_A &
+        bash> ./mclient ../files/matrix_C.txt 1 mtrx_C &
+        bash> ./vclient ../files/vector_b.txt 2 vec_b &
+        bash> ./vclient ../files_vector_d.txt 3 vec_d &
 
     Do not confuse the parameters and their order! :)
     It was a fast-hand applications, sorry, I couldn't have been on time to make it perfect :)
