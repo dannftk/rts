@@ -111,7 +111,7 @@ static enum deststation_error_code_e begin_process(int socket_fd_remote)
 
         DESTSTATION_LOG_LOG("Sleeping %d ms\n", DESTSTATION_SLEEP_TIME_MS);
 
-        usleep(DESTSTATION_SLEEP_TIME_MS * MICROSECONDS_IN_MILLISECONDS);
+        usleep(DESTSTATION_SLEEP_TIME_MS * US_IN_MS);
 
         DESTSTATION_LOG_LOG("Try get result from GateWay RTS...\n");
         fflush(stdout);

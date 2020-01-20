@@ -10,7 +10,7 @@
 #include "gateway_scheduler.h"
 #include "gateway_tasks.h"
 
-#define MICROSECONDS_IN_MILLISECONDS 1000
+#define US_IN_MS 1000
 #define DISPATCHER_SLEEP_MS 500
 
 pthread_t disp_thread_id;
@@ -71,7 +71,7 @@ void* process_messages(void *arg)
     while (1)
     {
         task_data_t task_data;
-        
+
         if (gateway_scheduler_get_ptask_from_queue(&task_data))
         {
             int br_fl = SEND_VELUE_TO_DESTSTATION == task_data.task_type;
@@ -86,10 +86,10 @@ void* process_messages(void *arg)
         }
         else
         {
-            fprintf(disp_f, "Queue is empty. Sleeping for %d...\n", DISPATCHER_SLEEP_MS);
-            usleep(DISPATCHER_SLEEP_MS * MICROSECONDS_IN_MILLISECONDS);
+            fprintf(disp_f, "Queue is empty. Sleeping for ms %d...\n", DISPATCHER_SLEEP_MS);
+            usleep(DISPATCHER_SLEEP_MS * US_IN_MS);
         }
-        
+
         fflush(disp_f);
     }
 

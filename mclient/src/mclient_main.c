@@ -18,7 +18,7 @@
 #include "mclient_main.h"
 #include "mclient_socket.h"
 
-#define MICROSECONDS_IN_MILLISECONDS 1000
+#define US_IN_MS 1000
 
 static int g_mtrx[ROWS][COLUMNS];
 static int g_mtrx_col_index[COLUMNS];
@@ -53,7 +53,8 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
         int row = 0, col = 0;
         while (!(feof(p_mtrx_f) || row == ROWS))
         {
-            fscanf(p_mtrx_f, "%d", &g_mtrx[row][col]);
+            int res = fscanf(p_mtrx_f, "%d", &g_mtrx[row][col]);
+            (void)res;
 
             ++col;
             if (col == COLUMNS)
@@ -70,7 +71,7 @@ static enum mclient_error_code_e read_mtrx_from_file(char *mtrx_fp)
 
 static int get_random_time(void)
 {
-    return MIN_SLEEP_TIME_MLS + rand() % (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
+    return MIN_SLEEP_TIME_MS + rand() % (MAX_SLEEP_TIME_MS - MIN_SLEEP_TIME_MS);
 }
 
 static void init_random(void)
@@ -171,7 +172,7 @@ static enum mclient_error_code_e begin_process(int socket_fd_remote, mclients_ty
                    send_mtrx_data.mtrx.value);
             fflush(stdout);
 
-            usleep(get_random_time() * MICROSECONDS_IN_MILLISECONDS);
+            usleep(get_random_time() * US_IN_MS);
 
             /* Send matrix value */
             if (-1 == mclient_socket_send(socket_fd_remote, &send_mtrx_data, sizeof(send_mtrx_data_t)))

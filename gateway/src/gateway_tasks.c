@@ -110,10 +110,10 @@ void gateway_tasks_mul_mtrx_A_val_on_vector_b_val(int mtrx_col_val_pos)
 
         if (COLUMNS == g_vector_Ab_res_rec_count)
         {
-            memset(g_mtrx_A_row, 0, COLUMNS);
-            memset(g_mtrx_A_row_written, 0, COLUMNS);
-            memset(g_vector_b, 0, VECTOR_SIZE);
-            memset(g_vector_b_written, 0, VECTOR_SIZE);
+            memset(g_mtrx_A_row, 0, sizeof(int) * COLUMNS);
+            memset(g_mtrx_A_row_written, 0, sizeof(int) * COLUMNS);
+            memset(g_vector_b, 0, sizeof(int) * VECTOR_SIZE);
+            memset(g_vector_b_written, 0, sizeof(int) * VECTOR_SIZE);
             g_vector_Ab_res_rec_count = 0;
 
             task_data_t task_data = {
@@ -135,10 +135,10 @@ void gateway_tasks_mul_mtrx_C_val_on_vector_d_val(int mtrx_col_val_pos)
 
         if (COLUMNS == g_vector_Cd_res_rec_count)
         {
-            memset(g_mtrx_C_row, 0, COLUMNS);
-            memset(g_mtrx_C_row_written, 0, COLUMNS);
-            memset(g_vector_d, 0, VECTOR_SIZE);
-            memset(g_vector_d_written, 0, VECTOR_SIZE);
+            memset(g_mtrx_C_row, 0, sizeof(int) * COLUMNS);
+            memset(g_mtrx_C_row_written, 0, sizeof(int) * COLUMNS);
+            memset(g_vector_d, 0, sizeof(int) * VECTOR_SIZE);
+            memset(g_vector_d_written, 0, sizeof(int) * VECTOR_SIZE);
             g_vector_Cd_res_rec_count = 0;
 
             task_data_t task_data = {
@@ -161,10 +161,10 @@ void gateway_tasks_mul_vector_b_val_on_mtrx_A_val(int vector_val_pos)
 
         if (COLUMNS == g_vector_Ab_res_rec_count)
         {
-            memset(g_mtrx_A_row, 0, COLUMNS);
-            memset(g_mtrx_A_row_written, 0, COLUMNS);
-            memset(g_vector_b, 0, VECTOR_SIZE);
-            memset(g_vector_b_written, 0, VECTOR_SIZE);
+            memset(g_mtrx_A_row, 0, sizeof(int) * COLUMNS);
+            memset(g_mtrx_A_row_written, 0, sizeof(int) * COLUMNS);
+            memset(g_vector_b, 0, sizeof(int) * VECTOR_SIZE);
+            memset(g_vector_b_written, 0, sizeof(int) * VECTOR_SIZE);
             g_vector_Ab_res_rec_count = 0;
 
             task_data_t task_data = {
@@ -187,10 +187,10 @@ void gateway_tasks_mul_vector_d_val_on_mtrx_C_val(int vector_val_pos)
 
         if (COLUMNS == g_vector_Cd_res_rec_count)
         {
-            memset(g_mtrx_C_row, 0, COLUMNS);
-            memset(g_mtrx_C_row_written, 0, COLUMNS);
-            memset(g_vector_d, 0, VECTOR_SIZE);
-            memset(g_vector_d_written, 0, VECTOR_SIZE);
+            memset(g_mtrx_C_row, 0, sizeof(int) * COLUMNS);
+            memset(g_mtrx_C_row_written, 0, sizeof(int) * COLUMNS);
+            memset(g_vector_d, 0, sizeof(int) * VECTOR_SIZE);
+            memset(g_vector_d_written, 0, sizeof(int) * VECTOR_SIZE);
             g_vector_Cd_res_rec_count = 0;
 
             task_data_t task_data = {
@@ -251,7 +251,7 @@ void gateway_tasks_send_value_to_destination_station(void)
 
     g_vector_res_val = 0;
 
-    if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_DESTSTATION].socket_fd, 
+    if (-1 == gateway_socket_send(g_gateway_clients[GATEWAY_CLIENT_TYPE_DESTSTATION].socket_fd,
                                   &send_vector_value_to_deststation_data,
                                   sizeof(send_vector_value_to_deststation_data)))
     {

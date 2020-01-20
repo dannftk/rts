@@ -1,7 +1,7 @@
 # encoding: UTF-8
 # shell is 'bash' or 'sh'
-CCOMP ?= gcc
-CCOMP_FLAGS ?= -std=c11 -O2 -Wall
+CC ?= gcc
+CFLAGS ?= -std=gnu11 -O2 -Wall
 RM ?= rm -rf
 
 # directories
@@ -32,14 +32,15 @@ DEPS := $(patsubst $(SRC_DIR)/%.c, $(DEP_DIR)/%.d, $(SRCS))
 $(BIN_NAME): $(BIN_PATH)
 
 $(BIN_PATH): $(OBJS)
-	$(CCOMP) $(OBJS) -o $@
+	$(CC) $(OBJS) -o $@
 
 clean:
 	$(RM) $(OBJS) $(DEPS) $(BIN_PATH)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CCOMP) $(CCOMP_FLAGS) -c $< $(INCS) -MMD -MF $(DEP_DIR)/$*.d -o $@
+	$(CC) $(CFLAGS) -c $< $(INCS) -MMD -MF $(DEP_DIR)/$*.d -o $@
 
 .PHONY: $(BIN_NAME) $(BIN_PATH) clean
 
 -include $(DEPS)
+# DO NOT DELETE

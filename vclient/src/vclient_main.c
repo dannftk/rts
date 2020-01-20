@@ -18,7 +18,7 @@
 #include "vclient_main.h"
 #include "vclient_socket.h"
 
-#define MICROSECONDS_IN_MILLISECONDS 1000
+#define US_IN_MS 1000
 
 static int g_vector[VECTOR_SIZE];
 static int g_vector_index[VECTOR_SIZE];
@@ -50,7 +50,8 @@ static enum vclient_error_code_e read_vector_from_file(char *vector_fp)
         while (!(feof(p_vector_f) || pos == VECTOR_SIZE))
         {
             g_vector[pos] = pos;
-            fscanf(p_vector_f, "%d", &g_vector[pos]);
+            int res = fscanf(p_vector_f, "%d", &g_vector[pos]);
+            (void)res;
 
             ++pos;
         }
@@ -62,7 +63,7 @@ static enum vclient_error_code_e read_vector_from_file(char *vector_fp)
 
 static int get_random_time(void)
 {
-    return MIN_SLEEP_TIME_MLS + rand() % (MAX_SLEEP_TIME_MLS - MIN_SLEEP_TIME_MLS);
+    return MIN_SLEEP_TIME_MS + rand() % (MAX_SLEEP_TIME_MS - MIN_SLEEP_TIME_MS);
 }
 
 static void init_random(void)
@@ -159,7 +160,7 @@ static enum vclient_error_code_e begin_process(int socket_fd_remote, vclients_ty
                    send_vector_data.vector.pos,
                    send_vector_data.vector.value);
 
-            usleep(get_random_time() * MICROSECONDS_IN_MILLISECONDS);
+            usleep(get_random_time() * US_IN_MS);
 
             /* Send vector value */
             if (-1 == vclient_socket_send(socket_fd_remote, &send_vector_data, sizeof(send_vector_data)))

@@ -1,6 +1,6 @@
 # encoding: UTF-8
-CCOMP := gcc
-CCOMP_FLAGS := -std=c11 -O2 -Wall
+CC ?= gcc
+CFLAGS += -std=gnu11 -O2 -Wall
 RM := rm -rf
 CP := cp
 
@@ -14,16 +14,16 @@ BIN_DIR := bin
 all: mclient vclient deststation gateway
 
 mclient:
-	$(MAKE) -C $(MCLIENT_DIR) CCOMP="$(CCOMP)" CCOMP_FLAGS="$(CCOMP_FLAGS)" $@
+	$(MAKE) -C $(MCLIENT_DIR) CC="$(CC)" CFLAGS="$(CFLAGS)" $@
 	$(CP) $@/bin/$@ $(BIN_DIR)/
 vclient:
-	$(MAKE) -C $(VCLIENT_DIR) CCOMP="$(CCOMP)" CCOMP_FLAGS="$(CCOMP_FLAGS)" $@
+	$(MAKE) -C $(VCLIENT_DIR) CC="$(CC)" CFLAGS="$(CFLAGS)" $@
 	$(CP) $@/bin/$@ $(BIN_DIR)/
 deststation:
-	$(MAKE) -C $(DESTSTATION_DIR) CCOMP="$(CCOMP)" CCOMP_FLAGS="$(CCOMP_FLAGS)" $@
+	$(MAKE) -C $(DESTSTATION_DIR) CC="$(CC)" CFLAGS="$(CFLAGS)" $@
 	$(CP) $@/bin/$@ $(BIN_DIR)/
 gateway:
-	$(MAKE) -C $(GATEWAY_DIR) CCOMP="$(CCOMP)" CCOMP_FLAGS="$(CCOMP_FLAGS)" $@
+	$(MAKE) -C $(GATEWAY_DIR) CC="$(CC)" CFLAGS="$(CFLAGS)" $@
 	$(CP) $@/bin/$@ $(BIN_DIR)/
 clean:
 	$(MAKE) -C $(MCLIENT_DIR) $@

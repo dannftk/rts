@@ -3,8 +3,8 @@
 #ifndef VCLIENT_MAIN_H
 #define VCLIENT_MAIN_H
 
-#define MIN_SLEEP_TIME_MLS 100
-#define MAX_SLEEP_TIME_MLS 300
+#define MIN_SLEEP_TIME_MS 100
+#define MAX_SLEEP_TIME_MS 300
 
 #define VECTOR_SIZE 7
 
