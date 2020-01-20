@@ -1,4 +1,0 @@
-#!/bin/bash
-
-mkdir -p bin .obj .dep
-printf "\e[1;32mgateway successfully configured\e[0m\n"
